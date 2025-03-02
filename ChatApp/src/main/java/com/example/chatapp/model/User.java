@@ -1,8 +1,7 @@
 package com.example.chatapp.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +19,9 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "users")
 @EntityListeners(AuditingEntityListener.class)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User implements UserDetails, Principal {
 
     @Id
@@ -31,7 +33,7 @@ public class User implements UserDetails, Principal {
 
     private String password;
 
-    private boolean enable;
+    private boolean enabled;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
@@ -57,7 +59,7 @@ public class User implements UserDetails, Principal {
 
     @Override
     public boolean isEnabled() {
-        return enable;
+        return enabled;
     }
 
     @Override
