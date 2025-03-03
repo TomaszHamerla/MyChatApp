@@ -2,6 +2,7 @@ package com.example.chatapp.controller;
 
 import com.example.chatapp.model.auth.AuthReq;
 import com.example.chatapp.service.AuthService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ public class AuthController {
 
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("/register")
-    public void register(@RequestBody @Valid AuthReq authReq) {
+    public void register(@RequestBody @Valid AuthReq authReq) throws MessagingException {
         authService.register(authReq);
     }
 

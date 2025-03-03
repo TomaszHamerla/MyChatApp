@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aktywacja konta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: left;
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            font-size: 16px;
+            color: #555;
+        }
+        .activation-code {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2d89ff;
+            margin: 10px 0;
+        }
+        .footer {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Cześć, <span th:text="${username}"></span>!</h2>
+    <p>Dziękujemy za rejestrację w naszym serwisie. Aby aktywować konto, użyj poniższego kodu aktywacyjnego:</p>
+    <p class="activation-code" th:text="${activation_code}"></p>
+    <p>Jeśli to nie Ty się rejestrowałeś/aś, możesz zignorować tę wiadomość.</p>
+    <p class="footer">Pozdrawiamy, <br> Tomasz Hamerla</p>
+</div>
+</body>
+</html>
