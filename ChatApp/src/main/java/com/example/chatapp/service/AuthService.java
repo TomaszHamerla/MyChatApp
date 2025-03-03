@@ -9,6 +9,7 @@ import com.example.chatapp.repository.RoleRepository;
 import com.example.chatapp.repository.TokenRepository;
 import com.example.chatapp.repository.UserRepository;
 import com.example.chatapp.security.JwtService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,8 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.example.chatapp.model.email.EmailTemplateName.ACTIVATE_ACCOUNT;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -30,8 +33,9 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
     private final TokenRepository tokenRepository;
+    private final EmailService emailService;
 
-    public void register(AuthReq authReq) {
+    public void register(AuthReq authReq) throws MessagingException {
         var userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RoleNotInitialized("ROLE USER was not initiated"));
         var user = User.builder()
@@ -45,7 +49,7 @@ public class AuthService {
         } catch (DataIntegrityViolationException e) {
             throw new EmailAlreadyExistsException("Email " + user.getEmail() + " already exists!");
         }
-        generateAndSaveActivationToken(user);
+        sendValidationEmail(user);
     }
 
     public String login(AuthReq authReq) {
@@ -85,5 +89,16 @@ public class AuthService {
         }
 
         return codeBuilder.toString();
+    }
+
+    private void sendValidationEmail(User user) throws MessagingException {
+        var newToken = generateAndSaveActivationToken(user);
+
+        emailService.sendEmail(
+                user.getEmail(),
+                ACTIVATE_ACCOUNT,
+                newToken,
+                "Account activation"
+        );
     }
 }
