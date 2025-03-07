@@ -9,9 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AuthReq {
-    @Email
+    @Email(message = "Please provide a valid email address")
     @NotBlank(message = "Email can not be empty")
     private String email;
     @Size(min = 5, message = "Required 5 characters for password")
+    @NotBlank(message = "Password can not be empty")
     private String password;
 }
