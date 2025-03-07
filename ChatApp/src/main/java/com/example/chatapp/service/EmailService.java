@@ -23,6 +23,7 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
+    private final LogService logService;
 
     @Async
     public void sendEmail(
@@ -42,6 +43,7 @@ public class EmailService {
         helper.setSubject(subject);
         helper.setText(htmlContent, true);
 
+        logService.logInfo("Sending email");
         mailSender.send(message);
     }
 }

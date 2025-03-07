@@ -34,6 +34,7 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final TokenRepository tokenRepository;
     private final EmailService emailService;
+    private final LogService logService;
 
     public void register(AuthReq authReq) throws MessagingException {
         var userRole = roleRepository.findByName("USER")
@@ -49,9 +50,14 @@ public class AuthService {
         } catch (DataIntegrityViolationException e) {
             throw new EmailAlreadyExistsException("Email " + user.getEmail() + " already exists!");
         }
+        logService.logInfo("Added new user to db");
         sendValidationEmail(user);
     }
 
+    /*
+    if user is enabled throwing DisabledException
+    given bad credentials throwing BadCredentialsException
+     */
     public String login(AuthReq authReq) {
         var auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -61,6 +67,7 @@ public class AuthService {
         );
         var user = ((User) auth.getPrincipal());
 
+        logService.logInfo("Logged user");
         return jwtService.generateToken(user);
     }
 
