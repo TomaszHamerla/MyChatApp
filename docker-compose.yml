@@ -1,0 +1,24 @@
+services:
+  frontend:
+    build: ./ChatAppAngular
+    container_name: angular-app
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build: ./ChatApp
+    container_name: spring-app
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
