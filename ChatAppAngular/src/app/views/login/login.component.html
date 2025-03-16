@@ -1,0 +1,29 @@
+<div class="container">
+ <div class="login-container">
+   <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+     <div>
+       <h1>ChatApp - Zaloguj się</h1>
+     </div>
+     <div>
+       <p-floatlabel variant="on">
+         <input style="width: 100%" formControlName="email" pInputText>
+         <label>Email</label>
+       </p-floatlabel>
+     </div>
+
+     <div>
+       <p-floatlabel variant="on">
+         <p-password formControlName="password" autocomplete="true" [toggleMask]="true" [feedback]="false"/>
+         <label>Password</label>
+       </p-floatlabel>
+     </div>
+
+     <div>
+       <p-button label="Zaloguj" type="submit" [disabled]="!loginForm.valid"/>
+     </div>
+   </form>
+   <div class="register-info">
+     <span>Nie masz konta? Zarejestruj się!</span>
+   </div>
+ </div>
+</div>
