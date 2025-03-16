@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+}
+
+.login-container {
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgb(0 0 0);
+  background: rgb(103 103 103 / 80%);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.register-info {
+  margin-top: 1rem;
+}
+
+.register-info span {
+  font-size: 18px;
+  color: #1e067b;
+  border-bottom: 1px solid;
+  cursor: pointer;
+  font-weight: 900;
+}
