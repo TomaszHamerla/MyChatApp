@@ -15,6 +15,7 @@ import {ButtonModule} from "primeng/button";
 })
 export class LoginComponent {
   loginForm!: FormGroup;
+  loginMode = true;
 
   constructor(
     private authService: AuthService,
