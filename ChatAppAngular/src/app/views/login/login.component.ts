@@ -6,10 +6,12 @@ import {InputTextModule} from "primeng/inputtext";
 import {FloatLabel} from "primeng/floatlabel";
 import {PasswordModule} from "primeng/password";
 import {ButtonModule} from "primeng/button";
+import {NgClass} from "@angular/common";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule,FormsModule, InputTextModule, FloatLabel, PasswordModule, ButtonModule],
+  imports: [ReactiveFormsModule,FormsModule, InputTextModule, FloatLabel, PasswordModule, ButtonModule, NgClass],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -19,7 +21,8 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -33,5 +36,9 @@ export class LoginComponent {
       next: (val) =>
         console.log(val)
     });
+  }
+
+  resetPassword() {
+    this.router.navigate(['/reset-password']);
   }
 }

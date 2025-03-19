@@ -30,9 +30,10 @@
         }
       </div>
     </form>
-    <div class="register-info">
+    <div [ngClass]="loginMode ? 'login-info ' : 'register-info'">
       @if(loginMode) {
-      <span (click)="loginMode = !loginMode">Nie masz konta? Zarejestruj się!</span>
+      <div><span (click)="loginMode = !loginMode">Nie masz konta? Zarejestruj się!</span></div>
+      <div><span (click)="resetPassword()" class="password-forgot">Zapomniałeś hasła ?</span></div>
       } @else{
       <span (click)="loginMode = !loginMode">Masz konto? Zaloguj się!</span>
       }
