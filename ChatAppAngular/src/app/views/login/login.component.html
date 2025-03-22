@@ -1,11 +1,17 @@
 <div class="container">
   <div class="login-container">
-    <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+    <form [formGroup]="loginForm" (ngSubmit)="auth()" class="login-form">
       <div>
         @if(loginMode) {
-        <h1>ChatApp - Zaloguj się</h1>
+        <div class="form-header">
+         <h1>ChatApp</h1>
+         <h2>Logowanie</h2>
+        </div>
         } @else {
-        <h1>ChatApp - Zarejestruj się</h1>
+        <div class="form-header">
+         <h1>ChatApp</h1>
+         <h2>Rejestracja</h2>
+        </div>
         }
       </div>
       <div>
@@ -18,7 +24,7 @@
       <div>
         <p-floatlabel variant="on">
           <p-password formControlName="password" autocomplete="true" [toggleMask]="true" [feedback]="false"/>
-          <label>Password</label>
+          <label>Hasło</label>
         </p-floatlabel>
       </div>
 

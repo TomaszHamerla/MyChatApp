@@ -7,6 +7,7 @@ import {providePrimeNG} from "primeng/config";
 import Aura from '@primeng/themes/aura';
 import {provideAnimationsAsync} from "@angular/platform-browser/animations/async";
 import {tokenInterceptor} from "./service/interceptor/token.interceptor";
+import {MessageService} from "primeng/api";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,7 +22,8 @@ export const appConfig: ApplicationConfig = {
           darkModeSelector: false
         }
       },
-      ripple: true
-    })
+      ripple: true,
+    }),
+    [MessageService]
   ]
 };

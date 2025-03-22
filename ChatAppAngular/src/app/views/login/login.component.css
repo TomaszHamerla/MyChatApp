@@ -13,6 +13,19 @@
   background: rgb(103 103 103 / 80%);
 }
 
+.form-header {
+  text-align: center;
+}
+
+.form-header > h1 {
+  color: #1e067b;
+  text-decoration: underline;
+}
+
+.form-header > h2 {
+  color: #0d082d;
+}
+
 .login-form {
   display: flex;
   min-width: 352px;
