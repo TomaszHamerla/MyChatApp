@@ -46,7 +46,8 @@ export class LoginComponent {
     const authReq: AuthReq = this.loginForm.value;
     this.authService.login(authReq).subscribe({
       next: (val) => {
-        console.log(val);
+        this.toastService.showInfo('Zalogowano pomyślnie');
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         const errorResponse = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;

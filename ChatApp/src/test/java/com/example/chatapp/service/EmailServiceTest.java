@@ -24,6 +24,8 @@ public class EmailServiceTest {
         String subject = "Testowy e-mail";
 
         // when + then
-        emailService.sendEmail(to, ACTIVATE_ACCOUNT, activationCode, subject);
+        emailService.sendEmail(
+                to, ACTIVATE_ACCOUNT, activationCode, subject, "http://localhost:8080/activate-account"
+        );
     }
 }

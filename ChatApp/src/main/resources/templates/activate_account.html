@@ -38,6 +38,21 @@
             color: #999;
             margin-top: 20px;
         }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 20px 0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -46,6 +61,8 @@
     <p>Dziękujemy za rejestrację w naszym serwisie. Aby aktywować konto, użyj poniższego kodu aktywacyjnego:</p>
     <p class="activation-code" th:text="${activation_code}"></p>
     <p>Jeśli to nie Ty się rejestrowałeś/aś, możesz zignorować tę wiadomość.</p>
+    <!-- Dynamiczny URL przekazywany do przycisku -->
+    <a th:href="${activationUrl}" class="button">Przejdź do strony</a>
     <p class="footer">Pozdrawiamy, <br> Tomasz Hamerla</p>
 </div>
 </body>

@@ -1,5 +1,6 @@
 package com.example.chatapp.service;
 
+import com.example.chatapp.exception.ActivationTokenException;
 import com.example.chatapp.exception.EmailAlreadyExistsException;
 import com.example.chatapp.exception.RoleNotInitialized;
 import com.example.chatapp.model.Token;
@@ -14,8 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -36,7 +39,7 @@ public class AuthService {
     private final EmailService emailService;
     private final LogService logService;
 
-    public void register(AuthReq authReq) throws MessagingException {
+    public void register(AuthReq authReq, String url) throws MessagingException {
         var userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RoleNotInitialized("ROLE USER was not initiated"));
         var user = User.builder()
@@ -48,10 +51,11 @@ public class AuthService {
         try {
             userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
-            throw new EmailAlreadyExistsException("Email " + user.getEmail() + " already exists!");
+            throw new EmailAlreadyExistsException("Email " + user.getEmail() + " jest już zarejestrowany!");
         }
         logService.logInfo("Added new user to db");
-        sendValidationEmail(user);
+        url = url + "activate-account";
+        sendValidationEmail(user, url);
     }
 
     /*
@@ -69,6 +73,25 @@ public class AuthService {
 
         logService.logInfo("Logged user");
         return jwtService.generateToken(user);
+    }
+
+    @Transactional(noRollbackFor = ActivationTokenException.class)
+    public void activateAccount(String token, String url) throws MessagingException {
+        Token savedToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new ActivationTokenException("Błędny token aktywacyjny"));
+        if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
+            url = url + "activate-account";
+            sendValidationEmail(savedToken.getUser(), url);
+            throw new ActivationTokenException("Token aktywacyjny wygasł, wysłano nowy na podany adres email");
+        }
+
+        var user = userRepository.findById(savedToken.getUser().getId())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        user.setEnabled(true);
+        userRepository.save(user);
+
+        savedToken.setValidatedAt(LocalDateTime.now());
+        tokenRepository.save(savedToken);
     }
 
     private String generateAndSaveActivationToken(User user) {
@@ -98,14 +121,15 @@ public class AuthService {
         return codeBuilder.toString();
     }
 
-    private void sendValidationEmail(User user) throws MessagingException {
+    private void sendValidationEmail(User user, String url) throws MessagingException {
         var newToken = generateAndSaveActivationToken(user);
 
         emailService.sendEmail(
                 user.getEmail(),
                 ACTIVATE_ACCOUNT,
                 newToken,
-                "Account activation"
+                "Account activation",
+                url
         );
     }
 }

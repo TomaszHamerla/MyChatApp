@@ -27,7 +27,7 @@ public class EmailService {
 
     @Async
     public void sendEmail(
-            String to, EmailTemplateName emailTemplate, String activationCode, String subject
+            String to, EmailTemplateName emailTemplate, String activationCode, String subject, String activationUrl
     ) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, MULTIPART_MODE_MIXED_RELATED, UTF_8.name());
@@ -35,6 +35,7 @@ public class EmailService {
         Map<String, Object> properties = new HashMap<>();
         properties.put("username", to);
         properties.put("activation_code", activationCode);
+        properties.put("activationUrl", activationUrl);
         Context context = new Context();
         context.setVariables(properties);
         String htmlContent = templateEngine.process(emailTemplate.getName(), context);

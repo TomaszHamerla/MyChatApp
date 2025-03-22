@@ -112,4 +112,17 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
+
+    @ExceptionHandler(ActivationTokenException.class)
+    public ResponseEntity<ExceptionResponse> handleActivationTokenException(ActivationTokenException ex) {
+        String msg = ex.getMessage();
+        logService.logError(msg);
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(msg)
+                                .build()
+                );
+    }
 }
