@@ -14,11 +14,16 @@
         </div>
         }
       </div>
+
       <div>
         <p-floatlabel variant="on">
           <input style="width: 100%" formControlName="email" pInputText>
           <label>Email</label>
         </p-floatlabel>
+        <small class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <span class="error-msg" *ngIf="loginForm.get('email')?.errors?.['required']">Email jest wymagany.</span>
+          <span class="error-msg" *ngIf="loginForm.get('email')?.errors?.['email']">Podaj poprawny adres email.</span>
+        </small>
       </div>
 
       <div>
@@ -26,6 +31,10 @@
           <p-password formControlName="password" autocomplete="true" [toggleMask]="true" [feedback]="false"/>
           <label>Hasło</label>
         </p-floatlabel>
+        <small class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <span class="error-msg" *ngIf="loginForm.get('password')?.errors?.['required']">Hasło jest wymagane.</span>
+          <span class="error-msg" *ngIf="loginForm.get('password')?.errors?.['minlength']">Hasło musi mieć co najmniej 5 znaków.</span>
+        </small>
       </div>
 
       <div>
@@ -36,6 +45,7 @@
         }
       </div>
     </form>
+
     <div [ngClass]="loginMode ? 'login-info ' : 'register-info'">
       @if(loginMode) {
       <div><span (click)="loginMode = !loginMode">Nie masz konta? Zarejestruj się!</span></div>

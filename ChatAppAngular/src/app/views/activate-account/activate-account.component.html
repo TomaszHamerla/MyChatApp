@@ -1,0 +1,10 @@
+<div class="container">
+ <div class="container-input">
+   <h2>Wprowadź kod aktywacyjny</h2>
+   <p-inputOtp [length]="6" [(ngModel)]="token" size="large"/>
+    <div class="btn-activate">
+      <p-button label="Aktywuj" (click)="activateAccount()" [disabled]="!token"/>
+      <p-button label="Anuluj" severity="danger" (click)="redirectToLogin()"></p-button>
+    </div>
+ </div>
+</div>

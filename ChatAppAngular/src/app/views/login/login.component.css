@@ -44,6 +44,11 @@
   flex-direction: column;
 }
 
+.error-msg {
+  color: #ff0000;
+  font-size: 14px;
+}
+
 .register-info span, .login-info span  {
   font-size: 18px;
   color: #1e067b;
