@@ -1,0 +1,42 @@
+<div class="container">
+  <div class="login-container">
+    <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+      <div>
+        @if(loginMode) {
+        <h1>ChatApp - Zaloguj się</h1>
+        } @else {
+        <h1>ChatApp - Zarejestruj się</h1>
+        }
+      </div>
+      <div>
+        <p-floatlabel variant="on">
+          <input style="width: 100%" formControlName="email" pInputText>
+          <label>Email</label>
+        </p-floatlabel>
+      </div>
+
+      <div>
+        <p-floatlabel variant="on">
+          <p-password formControlName="password" autocomplete="true" [toggleMask]="true" [feedback]="false"/>
+          <label>Password</label>
+        </p-floatlabel>
+      </div>
+
+      <div>
+        @if(loginMode) {
+        <p-button label="Zaloguj" type="submit" [disabled]="!loginForm.valid"/>
+        } @else {
+        <p-button label="Zarejestruj" type="submit" [disabled]="!loginForm.valid"/>
+        }
+      </div>
+    </form>
+    <div [ngClass]="loginMode ? 'login-info ' : 'register-info'">
+      @if(loginMode) {
+      <div><span (click)="loginMode = !loginMode">Nie masz konta? Zarejestruj się!</span></div>
+      <div><span (click)="resetPassword()" class="password-forgot">Zapomniałeś hasła ?</span></div>
+      } @else{
+      <span (click)="loginMode = !loginMode">Masz konto? Zaloguj się!</span>
+      }
+    </div>
+  </div>
+</div>
