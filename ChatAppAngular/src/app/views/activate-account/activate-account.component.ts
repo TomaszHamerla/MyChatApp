@@ -23,7 +23,16 @@ export class ActivateAccountComponent {
   }
 
   activateAccount() {
-
+    this.authService.activateAccount(this.token).subscribe({
+      next: () => {
+        this.toastService.showInfo('Konto zostało aktywowane');
+        this.redirectToLogin();
+      },
+      error: (err) => {
+        const errorResponse = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+        this.toastService.showError(errorResponse.error);
+      }
+    });
   }
 
   redirectToLogin() {

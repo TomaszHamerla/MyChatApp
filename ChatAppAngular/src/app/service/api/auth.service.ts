@@ -4,6 +4,7 @@ import {AuthReq} from "../../model/auth";
 import {environment} from "../../../environments/environment";
 import {TokenService} from "../utils/token.service";
 import {tap} from "rxjs";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private router: Router
   ) {
   }
 
@@ -26,5 +28,19 @@ export class AuthService {
 
   register(authReq: AuthReq) {
     return this.http.post<void>(`${environment.apiUrl}/auth/register`, authReq, {observe: 'response'});
+  }
+
+  activateAccount(token: string) {
+    const params = {token};
+    return this.http.post<void>(`${environment.apiUrl}/auth/activate-account`, {}, {params});
+  }
+
+  logout() {
+    this.tokenService.removeToken();
+    this.router.navigate(['login']);
+  }
+
+  isLoggedId() {
+   return this.tokenService.token !== null;
   }
 }
