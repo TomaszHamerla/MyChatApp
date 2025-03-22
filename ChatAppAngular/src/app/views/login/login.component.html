@@ -1,25 +1,40 @@
 <div class="container">
   <div class="login-container">
-    <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
+    <form [formGroup]="loginForm" (ngSubmit)="auth()" class="login-form">
       <div>
         @if(loginMode) {
-        <h1>ChatApp - Zaloguj się</h1>
+        <div class="form-header">
+         <h1>ChatApp</h1>
+         <h2>Logowanie</h2>
+        </div>
         } @else {
-        <h1>ChatApp - Zarejestruj się</h1>
+        <div class="form-header">
+         <h1>ChatApp</h1>
+         <h2>Rejestracja</h2>
+        </div>
         }
       </div>
+
       <div>
         <p-floatlabel variant="on">
           <input style="width: 100%" formControlName="email" pInputText>
           <label>Email</label>
         </p-floatlabel>
+        <small class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <span class="error-msg" *ngIf="loginForm.get('email')?.errors?.['required']">Email jest wymagany.</span>
+          <span class="error-msg" *ngIf="loginForm.get('email')?.errors?.['email']">Podaj poprawny adres email.</span>
+        </small>
       </div>
 
       <div>
         <p-floatlabel variant="on">
           <p-password formControlName="password" autocomplete="true" [toggleMask]="true" [feedback]="false"/>
-          <label>Password</label>
+          <label>Hasło</label>
         </p-floatlabel>
+        <small class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <span class="error-msg" *ngIf="loginForm.get('password')?.errors?.['required']">Hasło jest wymagane.</span>
+          <span class="error-msg" *ngIf="loginForm.get('password')?.errors?.['minlength']">Hasło musi mieć co najmniej 5 znaków.</span>
+        </small>
       </div>
 
       <div>
@@ -30,6 +45,7 @@
         }
       </div>
     </form>
+
     <div [ngClass]="loginMode ? 'login-info ' : 'register-info'">
       @if(loginMode) {
       <div><span (click)="loginMode = !loginMode">Nie masz konta? Zarejestruj się!</span></div>

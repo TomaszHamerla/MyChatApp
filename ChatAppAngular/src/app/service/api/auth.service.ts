@@ -23,4 +23,8 @@ export class AuthService {
         }
       ));
   }
+
+  register(authReq: AuthReq) {
+    return this.http.post<void>(`${environment.apiUrl}/auth/register`, authReq, {observe: 'response'});
+  }
 }

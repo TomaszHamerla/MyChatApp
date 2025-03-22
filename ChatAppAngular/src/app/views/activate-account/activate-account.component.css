@@ -6,21 +6,16 @@
   align-items: center;
 }
 
-.container-reset {
-  padding: 2rem;
+.container-input {
+  padding: 1rem;
   border-radius: 10px;
   box-shadow: 0 0 10px rgb(0 0 0);
   background: rgb(103 103 103 / 80%);
-  max-width: 452px;
+  text-align: center;
 }
 
-.error-msg {
-  color: #ff0000;
-  font-size: 14px;
-}
-
-.btn-reset {
-  margin-top: 1rem;
+.btn-activate {
   display: flex;
+  margin-top: 1rem;
   justify-content: space-between;
 }
