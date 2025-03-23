@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static com.example.chatapp.model.email.EmailTemplateName.ACTIVATE_ACCOUNT;
+import static com.example.chatapp.model.email.EmailTemplateName.RESET_PASSWORD;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -26,6 +27,19 @@ public class EmailServiceTest {
         // when + then
         emailService.sendEmail(
                 to, ACTIVATE_ACCOUNT, activationCode, subject, "http://localhost:8080/activate-account"
+        );
+    }
+
+    @Test
+    void shouldSendRestartPasswordEmail() throws MessagingException {
+        // given
+        String to = "tomaszhamerla@interia.pl";
+        String activationCode = "123456";
+        String subject = "Testowy e-mail";
+
+        // when + then
+        emailService.sendEmail(
+                to, RESET_PASSWORD, activationCode, subject, "http://localhost:8080/reset-password"
         );
     }
 }

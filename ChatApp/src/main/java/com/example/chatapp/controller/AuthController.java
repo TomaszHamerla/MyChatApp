@@ -35,4 +35,15 @@ public class AuthController {
         String url = request.getHeader("Referer");
         authService.activateAccount(token, url);
     }
+
+    @PostMapping("/send-reset-password-link")
+    public void sendResetPasswordLink(@RequestParam String email, HttpServletRequest request) throws MessagingException {
+        String url = request.getHeader("Referer");
+        authService.sendResetPasswordLink(email, url);
+    }
+
+    @PostMapping("/reset-password")
+    public void resetPassword(@RequestBody @Valid AuthReq authReq) {
+        authService.resetPassword(authReq);
+    }
 }

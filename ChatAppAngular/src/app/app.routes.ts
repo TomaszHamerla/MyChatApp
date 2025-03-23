@@ -5,11 +5,13 @@ import {ActivateAccountComponent} from "./views/activate-account/activate-accoun
 import {HomeComponent} from "./views/home/home.component";
 import {authGuard} from "./guards/auth.guard";
 import {redirectGuard} from "./guards/redirect.guard";
+import {NewPasswordComponent} from "./views/new-password/new-password.component";
 
 export const routes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'login', component: LoginComponent, canActivate: [redirectGuard]},
   {path: 'reset-password', component: ResetPasswordComponent, canActivate: [redirectGuard]},
+  {path: 'new-password', component: NewPasswordComponent, canActivate: [redirectGuard]},
   {path: 'activate-account', component: ActivateAccountComponent, canActivate: [redirectGuard]},
   {path: 'home', component: HomeComponent, canActivate: [authGuard]},
   {path: '**', redirectTo: '/home'},

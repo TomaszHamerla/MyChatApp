@@ -41,7 +41,6 @@ export class LoginComponent {
     this.router.navigate(['/reset-password']);
   }
 
-  // TODO
   private login() {
     const authReq: AuthReq = this.loginForm.value;
     this.authService.login(authReq).subscribe({
