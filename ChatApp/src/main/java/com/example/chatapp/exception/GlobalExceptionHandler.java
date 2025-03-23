@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,8 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.example.chatapp.exception.BusinessError.ACCOUNT_DISABLED;
-import static com.example.chatapp.exception.BusinessError.BAD_CREDENTIALS;
+import static com.example.chatapp.exception.BusinessError.*;
 import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
@@ -122,6 +122,20 @@ public class GlobalExceptionHandler {
                 .body(
                         ExceptionResponse.builder()
                                 .error(msg)
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        String msg = ex.getMessage();
+        logService.logError(msg);
+        return ResponseEntity
+                .status(NOT_FOUND)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(msg)
+                                .errorDescription(EMAIL_NOT_FOUND.getDescription())
                                 .build()
                 );
     }

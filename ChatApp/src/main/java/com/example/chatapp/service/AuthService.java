@@ -6,6 +6,8 @@ import com.example.chatapp.exception.RoleNotInitialized;
 import com.example.chatapp.model.Token;
 import com.example.chatapp.model.User;
 import com.example.chatapp.model.auth.AuthReq;
+import com.example.chatapp.model.email.EmailTemplateName;
+import com.example.chatapp.model.urlRoute.UrlRoute;
 import com.example.chatapp.repository.RoleRepository;
 import com.example.chatapp.repository.TokenRepository;
 import com.example.chatapp.repository.UserRepository;
@@ -25,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.chatapp.model.email.EmailTemplateName.ACTIVATE_ACCOUNT;
+import static com.example.chatapp.model.email.EmailTemplateName.RESET_PASSWORD;
 
 @Service
 @RequiredArgsConstructor
@@ -54,8 +57,8 @@ public class AuthService {
             throw new EmailAlreadyExistsException("Email " + user.getEmail() + " jest już zarejestrowany!");
         }
         logService.logInfo("Added new user to db");
-        url = url + "activate-account";
-        sendValidationEmail(user, url);
+        url = url + UrlRoute.ACTIVE_ACCOUNT.getName();
+        sendValidationEmail(user, url, ACTIVATE_ACCOUNT, "Aktywacja konta");
     }
 
     /*
@@ -80,8 +83,8 @@ public class AuthService {
         Token savedToken = tokenRepository.findByToken(token)
                 .orElseThrow(() -> new ActivationTokenException("Błędny token aktywacyjny"));
         if (LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
-            url = url + "activate-account";
-            sendValidationEmail(savedToken.getUser(), url);
+            url = url + UrlRoute.ACTIVE_ACCOUNT.getName();
+            sendValidationEmail(savedToken.getUser(), url, ACTIVATE_ACCOUNT, "Aktywacja konta");
             throw new ActivationTokenException("Token aktywacyjny wygasł, wysłano nowy na podany adres email");
         }
 
@@ -92,6 +95,25 @@ public class AuthService {
 
         savedToken.setValidatedAt(LocalDateTime.now());
         tokenRepository.save(savedToken);
+    }
+
+    public void sendResetPasswordLink(String email, String url) {
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        url = url + UrlRoute.NEW_PASSWORD.getName();
+        try {
+            sendValidationEmail(user, url, RESET_PASSWORD, "Reset hasła");
+        } catch (MessagingException e) {
+            logService.logError(e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void resetPassword(AuthReq authReq) {
+        var user = userRepository.findByEmail(authReq.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        user.setPassword(passwordEncoder.encode(authReq.getPassword()));
+        userRepository.save(user);
     }
 
     private String generateAndSaveActivationToken(User user) {
@@ -121,14 +143,14 @@ public class AuthService {
         return codeBuilder.toString();
     }
 
-    private void sendValidationEmail(User user, String url) throws MessagingException {
+    private void sendValidationEmail(User user, String url, EmailTemplateName emailTemplateName, String subject) throws MessagingException {
         var newToken = generateAndSaveActivationToken(user);
 
         emailService.sendEmail(
                 user.getEmail(),
-                ACTIVATE_ACCOUNT,
+                emailTemplateName,
                 newToken,
-                "Account activation",
+                subject,
                 url
         );
     }

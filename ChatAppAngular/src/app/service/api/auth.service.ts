@@ -35,6 +35,15 @@ export class AuthService {
     return this.http.post<void>(`${environment.apiUrl}/auth/activate-account`, {}, {params});
   }
 
+  sendResetPasswordLink(email: string) {
+    const params = {email};
+    return this.http.post<void>(`${environment.apiUrl}/auth/send-reset-password-link`, {}, {params});
+  }
+
+  resetPassword(authReq: AuthReq) {
+    return this.http.post<void>(`${environment.apiUrl}/auth/reset-password`, authReq);
+  }
+
   logout() {
     this.tokenService.removeToken();
     this.router.navigate(['login']);
