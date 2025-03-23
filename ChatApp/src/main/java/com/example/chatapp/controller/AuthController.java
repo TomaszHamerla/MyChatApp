@@ -19,7 +19,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PostMapping("/register")
     public void register(@RequestBody @Valid AuthReq authReq, HttpServletRequest request) throws MessagingException {
-        String url = request.getHeader("Referer");
+        String url = request.getHeader("Origin");
         authService.register(authReq, url);
     }
 
@@ -32,13 +32,13 @@ public class AuthController {
     public void confirm(
             @RequestParam String token, HttpServletRequest request
     ) throws MessagingException {
-        String url = request.getHeader("Referer");
+        String url = request.getHeader("Origin");
         authService.activateAccount(token, url);
     }
 
     @PostMapping("/send-reset-password-link")
     public void sendResetPasswordLink(@RequestParam String email, HttpServletRequest request) throws MessagingException {
-        String url = request.getHeader("Referer");
+        String url = request.getHeader("Origin");
         authService.sendResetPasswordLink(email, url);
     }
 
