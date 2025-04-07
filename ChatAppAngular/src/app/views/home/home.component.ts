@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {WebSocketService} from "../../service/ws/web-socket.service";
 
 @Component({
   selector: 'app-home',
@@ -6,6 +7,22 @@ import { Component } from '@angular/core';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
 
+  constructor(
+    private webSocketService: WebSocketService
+  ) {
+  }
+
+  ngOnInit(): void {
+    this.connectWebSocket();
+  }
+
+  ngOnDestroy(): void {
+    this.webSocketService.disconnect();
+  }
+
+  private connectWebSocket() {
+    this.webSocketService.connect();
+  }
 }

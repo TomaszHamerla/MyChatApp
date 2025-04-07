@@ -27,23 +27,23 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
             WebSocketHandler wsHandler,
             Map<String, Object> attributes) {
 
-        List<String> authHeaders = request.getHeaders().get(HttpHeaders.AUTHORIZATION);
-        if (authHeaders.isEmpty()) {
-            return false;
-        }
-        String authHeader = authHeaders.get(0);
-        if (!authHeader.startsWith("Bearer ")) {
-            return false;
-        }
-        String token = authHeader.substring(7);
-        String userEmail = jwtService.extractUsername(token);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-
-        if (!jwtService.isTokenValid(token, userDetails)) {
-            return false;
-        }
-
-        attributes.put("username", userEmail);
+//        List<String> authHeaders = request.getHeaders().get(HttpHeaders.AUTHORIZATION);
+//        if (authHeaders == null || authHeaders.isEmpty()) {
+//            return false;
+//        }
+//        String authHeader = authHeaders.get(0);
+//        if (!authHeader.startsWith("Bearer ")) {
+//            return false;
+//        }
+//        String token = authHeader.substring(7);
+//        String userEmail = jwtService.extractUsername(token);
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+//
+//        if (!jwtService.isTokenValid(token, userDetails)) {
+//            return false;
+//        }
+//
+//        attributes.put("username", userEmail);
 
         return true;
     }
