@@ -1,37 +1,39 @@
 package com.example.chatapp.model;
 
-import com.example.chatapp.model.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "roles")
+@Table(name = "messages")
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
+public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    private String name;
-
-    @ManyToMany(mappedBy = "roles")
-    @JsonIgnore
-    private List<User> users;
+    private String content;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
+
+    @Column(name = "sender_id", nullable = false)
+    private Long senderId;
+
+    @Column(name = "receiver_id", nullable = false)
+    private Long receiverId;
+
+    @ManyToOne
+    @JoinColumn(name = "chat_id")
+    private Chat chat;
 }
