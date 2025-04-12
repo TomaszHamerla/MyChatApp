@@ -1,6 +1,6 @@
 package com.example.chatapp.model.message;
 
-import com.example.chatapp.model.Chat;
+import com.example.chatapp.model.chat.Chat;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
