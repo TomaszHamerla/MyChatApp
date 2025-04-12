@@ -1,7 +1,7 @@
 package com.example.chatapp.service;
 
 import com.example.chatapp.exception.ResourceNotFoundException;
-import com.example.chatapp.model.Chat;
+import com.example.chatapp.model.chat.Chat;
 import com.example.chatapp.model.Notification;
 import com.example.chatapp.model.message.Message;
 import com.example.chatapp.model.message.MessageRequest;
