@@ -1,5 +1,6 @@
 package com.example.chatapp.model;
 
+import com.example.chatapp.model.message.Message;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
