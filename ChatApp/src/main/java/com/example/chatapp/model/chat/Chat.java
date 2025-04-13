@@ -1,6 +1,6 @@
 package com.example.chatapp.model.chat;
 
-import com.example.chatapp.model.User;
+import com.example.chatapp.model.user.User;
 import com.example.chatapp.model.message.Message;
 import jakarta.persistence.*;
 import lombok.*;

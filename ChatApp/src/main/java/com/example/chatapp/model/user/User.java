@@ -1,5 +1,6 @@
-package com.example.chatapp.model;
+package com.example.chatapp.model.user;
 
+import com.example.chatapp.model.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

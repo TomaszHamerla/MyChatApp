@@ -4,7 +4,7 @@ import com.example.chatapp.exception.ActivationTokenException;
 import com.example.chatapp.exception.EmailAlreadyExistsException;
 import com.example.chatapp.exception.RoleNotInitialized;
 import com.example.chatapp.model.Token;
-import com.example.chatapp.model.User;
+import com.example.chatapp.model.user.User;
 import com.example.chatapp.model.auth.AuthReq;
 import com.example.chatapp.model.email.EmailTemplateName;
 import com.example.chatapp.model.urlRoute.UrlRoute;
