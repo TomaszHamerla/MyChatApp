@@ -8,6 +8,7 @@ import com.example.chatapp.model.message.MessageRequest;
 import com.example.chatapp.model.message.MessageResponse;
 import com.example.chatapp.repository.ChatRepository;
 import com.example.chatapp.repository.MessageRepository;
+import com.example.chatapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -22,6 +23,7 @@ public class MessageService {
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
     private final NotificationService notificationService;
+    private final UserRepository userRepository;
 
     @Transactional
     public void saveMessage(MessageRequest messageRequest) {
@@ -44,8 +46,10 @@ public class MessageService {
                 .chatName(chat.getRecipient().getUsername())
                 .build();
 
-        String receiverId = messageRequest.getReceiverId().toString();
-        notificationService.sendNotification(receiverId, notification);
+        String userEmail = userRepository.findById(messageRequest.getReceiverId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"))
+                .getEmail();
+        notificationService.sendNotification(userEmail, notification);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)

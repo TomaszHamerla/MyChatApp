@@ -10,6 +10,7 @@ import {Router} from "@angular/router";
   providedIn: 'root'
 })
 export class AuthService {
+  userEmail: string = '';
 
   constructor(
     private http: HttpClient,
@@ -19,9 +20,10 @@ export class AuthService {
   }
 
   login(authReq: AuthReq) {
-   return this.http.post<string>(`${environment.apiUrl}/auth/login`, authReq, {responseType: 'text' as 'json'}).pipe(
+    return this.http.post<string>(`${environment.apiUrl}/auth/login`, authReq, {responseType: 'text' as 'json'}).pipe(
       tap(token => {
           this.tokenService.token = token;
+          this.userEmail = authReq.email;
         }
       ));
   }
@@ -50,6 +52,6 @@ export class AuthService {
   }
 
   isLoggedId() {
-   return this.tokenService.token !== null;
+    return this.tokenService.token !== null;
   }
 }
