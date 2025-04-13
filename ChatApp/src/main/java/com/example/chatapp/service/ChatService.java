@@ -1,7 +1,7 @@
 package com.example.chatapp.service;
 
 import com.example.chatapp.exception.ResourceNotFoundException;
-import com.example.chatapp.model.User;
+import com.example.chatapp.model.user.User;
 import com.example.chatapp.model.chat.Chat;
 import com.example.chatapp.model.chat.ChatResponse;
 import com.example.chatapp.repository.ChatRepository;

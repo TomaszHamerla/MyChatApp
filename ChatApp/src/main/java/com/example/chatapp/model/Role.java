@@ -1,6 +1,6 @@
 package com.example.chatapp.model;
 
-import com.example.chatapp.model.User;
+import com.example.chatapp.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
