@@ -11,7 +11,7 @@ public class NotificationService {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public void sendNotification(String userId, Notification notification) {
-        messagingTemplate.convertAndSendToUser(userId, "/chat", notification);
+    public void sendNotification(String userEmail, Notification notification) {
+        messagingTemplate.convertAndSendToUser(userEmail, "/chat", notification);
     }
 }
