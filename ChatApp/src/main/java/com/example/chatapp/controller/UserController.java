@@ -19,7 +19,7 @@ public class UserController {
 
     @GetMapping
     public List<UserResponse> getAllUsers(HttpServletRequest request) {
-        String jwt = request.getHeader("Authorization");
+        String jwt = request.getHeader("Authorization").substring(7);
         return userService.finAllUsersExceptSelf(jwt);
     }
 }
