@@ -3,9 +3,11 @@ import { WebSocketService } from "../../service/ws/web-socket.service";
 import { AuthService } from "../../service/api/auth.service";
 import { Subscription } from 'rxjs';
 import { Notification } from '../../model/Notification';
+import {UsersChatComponent} from "../../component/usersChat/users-chat.component";
 
 @Component({
   selector: 'app-home',
+  imports:[UsersChatComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

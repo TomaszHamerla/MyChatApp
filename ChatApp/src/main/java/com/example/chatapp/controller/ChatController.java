@@ -25,7 +25,7 @@ public class ChatController {
 
     @GetMapping
     public List<ChatResponse> getChatsByReceiver(HttpServletRequest request) {
-        String jwt = request.getHeader("Authorization");
+        String jwt = request.getHeader("Authorization").substring(7);
         return chatService.getChatsByReceiverId(jwt);
     }
 }
