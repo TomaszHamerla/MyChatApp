@@ -1,28 +1,46 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, output} from '@angular/core';
 import {UsersService} from "../../service/api/users.service";
 import {UserResponse} from "../../model/UserResponse";
 import {ToastService} from "../../service/utils/toast.service";
 import {FormsModule} from "@angular/forms";
 import {Listbox} from "primeng/listbox";
+import {Select} from "primeng/select";
+import {ChatService} from "../../service/api/chat.service";
+import {ChatResponse} from "../../model/ChatResponse";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-users-chat',
-  imports: [FormsModule, Listbox],
+  imports: [FormsModule, Listbox, Select, CommonModule],
   templateUrl: './users-chat.component.html',
   styleUrl: './users-chat.component.css'
 })
 export class UsersChatComponent implements OnInit {
   users: UserResponse[] = [];
-  selectedUser!: UserResponse;
+  chats: ChatResponse[] = [];
+  chatSelected = output<ChatResponse | null>();
+  selectedChat: ChatResponse | null = null;
 
   constructor(
     private usersService: UsersService,
     private toastService: ToastService,
+    private chatService: ChatService
   ) {
   }
 
   ngOnInit(): void {
     this.getUsers();
+    this.refreshChatList();
+  }
+
+  handleUserSelect(user: UserResponse, sel: Select) {
+    if (!user) return;
+    this.createChat(user);
+    sel.clear();
+  }
+
+  onChange(u: ChatResponse | null) {
+    this.chatSelected.emit(u);
   }
 
   private getUsers() {
@@ -34,5 +52,42 @@ export class UsersChatComponent implements OnInit {
         this.toastService.showError(error.error.message);
       }
     })
+  }
+
+  private getChatList() {
+    this.chatService.getChatList().subscribe({
+      next: (response) => {
+        this.chats = response;
+      },
+      error: (error) => {
+        this.toastService.showError(error.error.message);
+      }
+    });
+  }
+
+  private refreshChatList(chatId?: number) {
+    this.chatService.getChatList().subscribe({
+      next: (list) => {
+        this.chats = list;
+
+        if (chatId) {
+          const chat = this.chats.find(c => c.id === chatId) ?? null;
+          this.selectedChat = chat;
+          this.chatSelected.emit(chat);
+        }
+      },
+      error: (e) => this.toastService.showError(e.error.message),
+    });
+  }
+
+  private createChat(user: UserResponse) {
+    this.chatService.createChat(user.id).subscribe({
+      next: (chatId) => {
+        this.refreshChatList(chatId);
+      },
+      error: (error) => {
+        this.toastService.showError(error.error.message);
+      }
+    });
   }
 }

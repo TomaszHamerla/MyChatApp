@@ -1,4 +1,14 @@
-<p-listbox [options]="users"
-           [(ngModel)]="selectedUser"
-           [filter]="true"
-           optionLabel="email"/>
+<div class="container">
+  <p-select #sel [options]="users" optionLabel="email" placeholder="Dodaj nowy czat" filter="true"
+            emptyMessage="Brak danych" (onChange)="handleUserSelect($event.value, sel)"
+            emptyFilterMessage="Brak danych"
+  />
+  <ng-container *ngIf="chats.length > 0">
+    <p-listbox [options]="chats"
+               [filter]="true"
+               optionLabel="name"
+               [(ngModel)]="selectedChat"
+               (onChange)="onChange($event.value)" emptyFilterMessage="Brak czatów"/>
+  </ng-container>
+</div>
+
