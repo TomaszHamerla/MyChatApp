@@ -1,7 +1,10 @@
 <div class="container">
   <div class="users">
-    <app-users-chat></app-users-chat>
+    <app-users-chat (chatSelected)="selectedChat.set($event)"></app-users-chat>
   </div>
   <div class="chat">
+    <app-chat-window
+      [selectedChat]="selectedChat">
+    </app-chat-window>
   </div>
 </div>

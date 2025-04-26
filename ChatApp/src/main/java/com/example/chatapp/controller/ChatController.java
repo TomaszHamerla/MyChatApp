@@ -17,10 +17,11 @@ public class ChatController {
 
     @PostMapping
     public Long createChat(
-            @RequestParam(name = "senderId") Long senderId,
+            HttpServletRequest request,
             @RequestParam(name = "receiverId") Long receiverId
     ) {
-        return chatService.createChat(senderId, receiverId);
+        String jwt = request.getHeader("Authorization").substring(7);
+        return chatService.createChat(jwt, receiverId);
     }
 
     @GetMapping
