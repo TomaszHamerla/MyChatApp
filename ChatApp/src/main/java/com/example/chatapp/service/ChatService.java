@@ -28,11 +28,12 @@ public class ChatService {
     public List<ChatResponse> getChatsByReceiverId(String jwt) {
         User user = getUserByJwt(jwt);
 
-        return chatRepository.findChatsBySenderId(user.getId())
+        Long userId = user.getId();
+        return chatRepository.findChatsBySenderId(userId)
                 .stream()
                 .map(chat -> ChatResponse.builder()
                         .id(chat.getId())
-                        .name(chat.getRecipient().getName())
+                        .name(chat.getChatName(userId))
                         .lastMessage(chat.getLastMessage())
                         .senderId(chat.getSender().getId())
                         .receiverId(chat.getRecipient().getId())
