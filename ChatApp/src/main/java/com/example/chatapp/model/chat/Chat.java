@@ -1,7 +1,7 @@
 package com.example.chatapp.model.chat;
 
-import com.example.chatapp.model.user.User;
 import com.example.chatapp.model.message.Message;
+import com.example.chatapp.model.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -46,5 +46,14 @@ public class Chat {
             return messages.get(0).getContent();
         }
         return null;
+    }
+
+    @Transient
+    public String getChatName(Long id) {
+        if (sender.getId().equals(id)) {
+            return recipient.getName();
+        } else {
+            return sender.getName();
+        }
     }
 }
