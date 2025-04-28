@@ -1,1 +1,32 @@
-<p>chat-window works!</p>
+  <ng-container *ngIf="selectedChat(); else noChat">
+    <div class="chat-window">
+      <div class="chat-header">
+        <p>{{ selectedChat()?.name }}</p>
+      </div>
+      <div class="chat-messages-container">
+        <div class="chat-messages">
+          <ng-container *ngFor="let message of messages">
+            <div class="message">
+              <p>{{ message }}</p>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="input-container">
+        <div class="input">
+          <input type="text" pInputText [(ngModel)]="text" placeholder="Napisz wiadomość ..."/>
+        </div>
+        <div class="send-btn">
+          <p-button icon="pi pi-send"></p-button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+<ng-template #noChat>
+  <div class="no-chat">
+    <div class="no-chat-info">
+      <h1>Wybierz czat aby rozpocząć ...</h1>
+    </div>
+  </div>
+</ng-template>
+
