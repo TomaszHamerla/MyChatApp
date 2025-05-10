@@ -4,6 +4,7 @@ import {CommonModule} from "@angular/common";
 import {InputTextModule} from "primeng/inputtext";
 import {FormsModule} from "@angular/forms";
 import {ButtonModule} from "primeng/button";
+import {ChatService} from "../../service/api/chat.service";
 
 @Component({
   selector: 'app-chat-window',
@@ -17,12 +18,15 @@ export class ChatWindowComponent {
   text = '';
   messages: string[] = [];
 
-  constructor() {
+  constructor(
+    private chatService: ChatService
+  ) {
     effect(() => {
       const chat = this.selectedChat();
       if (chat) {
         console.log(chat)
       } else {
+        console.log('No chat selected');
       }
     });
   }
