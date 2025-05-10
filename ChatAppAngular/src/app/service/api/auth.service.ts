@@ -10,8 +10,6 @@ import {Router} from "@angular/router";
   providedIn: 'root'
 })
 export class AuthService {
-  userEmail: string = '';
-
   constructor(
     private http: HttpClient,
     private tokenService: TokenService,
@@ -19,11 +17,15 @@ export class AuthService {
   ) {
   }
 
+  get userEmail(): string {
+    return localStorage.getItem('userEmail') as string;
+  }
+
   login(authReq: AuthReq) {
     return this.http.post<string>(`${environment.apiUrl}/auth/login`, authReq, {responseType: 'text' as 'json'}).pipe(
       tap(token => {
           this.tokenService.token = token;
-          this.userEmail = authReq.email;
+          localStorage.setItem('userEmail', authReq.email);
         }
       ));
   }
@@ -48,6 +50,7 @@ export class AuthService {
 
   logout() {
     this.tokenService.removeToken();
+    localStorage.removeItem('userEmail');
     this.router.navigate(['login']);
   }
 

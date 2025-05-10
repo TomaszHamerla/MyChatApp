@@ -1,10 +1,14 @@
-import {Component, effect, Input, Signal} from '@angular/core';
+import {Component, effect, ElementRef, Input, Signal, ViewChild} from '@angular/core';
 import {ChatResponse} from "../../model/ChatResponse";
 import {CommonModule} from "@angular/common";
 import {InputTextModule} from "primeng/inputtext";
 import {FormsModule} from "@angular/forms";
 import {ButtonModule} from "primeng/button";
 import {ChatService} from "../../service/api/chat.service";
+import {MessageRequest} from "../../model/MessageRequest";
+import {MessageResponse} from "../../model/MessageResponse";
+import {ToastService} from "../../service/utils/toast.service";
+import {Notification} from "../../model/Notification";
 
 @Component({
   selector: 'app-chat-window',
@@ -15,19 +19,87 @@ import {ChatService} from "../../service/api/chat.service";
 export class ChatWindowComponent {
   @Input({required: true})
   selectedChat!: Signal<ChatResponse | null>;
+  @Input({required: true})
+  notifications!: Signal<Notification | null>;
   text = '';
-  messages: string[] = [];
+  messages: MessageResponse[] = [];
+  @ViewChild('scrollableDiv')
+  scrollableDiv!: ElementRef<HTMLDivElement>;
 
   constructor(
-    private chatService: ChatService
+    private chatService: ChatService,
+    private toastService: ToastService
   ) {
     effect(() => {
       const chat = this.selectedChat();
       if (chat) {
-        console.log(chat)
+        this.getMessages(chat.id);
       } else {
         console.log('No chat selected');
       }
     });
+
+    effect(() => {
+      const notification = this.notifications();
+      const chat = this.selectedChat();
+      if (notification && chat) {
+        if (notification.chatId === chat.id) {
+          const newMessage: MessageResponse = {
+            id: 0,
+            content: notification.content ?? '',
+            senderId: notification.senderId ?? 0,
+            receiverId: notification.receiverId ?? 0
+          }
+          this.messages.push(newMessage);
+          this.scrollToBottom();
+        }
+      }
+    });
+  }
+
+  sendMsg() {
+    const chat = this.selectedChat();
+    if (this.text.trim() !== '' && chat) {
+      const messageRequest: MessageRequest = {
+        content: this.text,
+        senderId: chat.senderId,
+        receiverId: chat.receiverId,
+        chatId: chat.id
+      };
+      this.chatService.sendMessage(messageRequest).subscribe({
+        next: () => {
+          this.text = '';
+        },
+        error: (error) => {
+          this.toastService.showError(error.error.message);
+        }
+      });
+    }
+  }
+
+  private getMessages(id: number) {
+    this.chatService.getMessages(id).subscribe({
+      next: (response) => {
+        this.messages = response;
+      },
+      error: (error) => {
+        this.toastService.showError(error.error.message);
+      },
+      complete: () => {
+        this.scrollToBottom();
+      }
+    });
+  }
+
+  private scrollToBottom(): void {
+    if (this.scrollableDiv) {
+      setTimeout(() => {
+        const div = this.scrollableDiv.nativeElement;
+        div.scrollTo({
+          top: div.scrollHeight,
+          behavior: 'smooth'
+        });
+      }, 200);
+    }
   }
 }

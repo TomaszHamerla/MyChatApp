@@ -27,7 +27,6 @@ export class WebSocketService {
     const socket = new SockJS(url);
     this.stompClient = Stomp.over(socket);
 
-    // Możesz ustawić nagłówki, jeśli są wymagane
     // const headers = {
     //   'Authorization': 'Bearer ' + token
     // };
@@ -35,12 +34,9 @@ export class WebSocketService {
     this.stompClient.connect(
       {},
       () => {
-        // Subskrybuj kanał i emituj powiadomienia do subject
         this.notificationsSubscription = this.stompClient.subscribe(`/user/${userEmail}/chat`, (message: any) => {
           if (message.body) {
             const notification: Notification = JSON.parse(message.body);
-            console.log('Odebrano wiadomość:', notification);
-            // Emituj powiadomienie
             this.notificationsSubject.next(notification);
           }
         });
