@@ -54,17 +54,6 @@ export class UsersChatComponent implements OnInit {
     })
   }
 
-  private getChatList() {
-    this.chatService.getChatList().subscribe({
-      next: (response) => {
-        this.chats = response;
-      },
-      error: (error) => {
-        this.toastService.showError(error.error.message);
-      }
-    });
-  }
-
   private refreshChatList(chatId?: number) {
     this.chatService.getChatList().subscribe({
       next: (list) => {
