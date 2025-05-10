@@ -3,11 +3,11 @@
       <div class="chat-header">
         <p>{{ selectedChat()?.name }}</p>
       </div>
-      <div class="chat-messages-container">
+      <div #scrollableDiv class="chat-messages-container">
         <div class="chat-messages">
           <ng-container *ngFor="let message of messages">
             <div class="message">
-              <p>{{ message }}</p>
+              <p>{{ message.content }}</p>
             </div>
           </ng-container>
         </div>
@@ -17,7 +17,7 @@
           <input type="text" pInputText [(ngModel)]="text" placeholder="Napisz wiadomość ..."/>
         </div>
         <div class="send-btn">
-          <p-button icon="pi pi-send"></p-button>
+          <p-button icon="pi pi-send" (onClick)="sendMsg()"></p-button>
         </div>
       </div>
     </div>

@@ -21,6 +21,8 @@
   overflow-y: auto;
   margin: 1rem;
   padding: 0 1rem;
+  scrollbar-color: #27a968 #2f2828;
+  scrollbar-width: thin;
 }
 
 .chat-messages {

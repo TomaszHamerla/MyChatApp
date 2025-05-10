@@ -14,7 +14,7 @@ import {ChatResponse} from "../../model/ChatResponse";
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  notifications: Notification[] = [];
+  notifications =  signal<Notification | null>(null);
   notificationsSub: Subscription = new Subscription();
   selectedChat = signal<ChatResponse | null>(null);
 
@@ -26,8 +26,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.notificationsSub = this.webSocketService.getNotifications().subscribe((notification: Notification) => {
-      this.notifications.push(notification);
-      console.log('Nowe powiadomienie w komponencie:', notification);
+      this.notifications.set(notification);
     });
 
     this.connectWebSocket();
