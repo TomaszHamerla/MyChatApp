@@ -1,6 +1,7 @@
 package com.example.chatapp.controller;
 
 import com.example.chatapp.model.auth.AuthReq;
+import com.example.chatapp.model.auth.AuthResponse;
 import com.example.chatapp.service.AuthService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody @Valid AuthReq authReq) {
+    public AuthResponse login(@RequestBody @Valid AuthReq authReq) {
         return authService.login(authReq);
     }
 

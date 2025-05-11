@@ -4,6 +4,7 @@ import com.example.chatapp.exception.ActivationTokenException;
 import com.example.chatapp.exception.EmailAlreadyExistsException;
 import com.example.chatapp.exception.RoleNotInitialized;
 import com.example.chatapp.model.Token;
+import com.example.chatapp.model.auth.AuthResponse;
 import com.example.chatapp.model.user.User;
 import com.example.chatapp.model.auth.AuthReq;
 import com.example.chatapp.model.email.EmailTemplateName;
@@ -65,7 +66,7 @@ public class AuthService {
     if user is enabled throwing DisabledException
     given bad credentials throwing BadCredentialsException
      */
-    public String login(AuthReq authReq) {
+    public AuthResponse login(AuthReq authReq) {
         var auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authReq.getEmail(),
@@ -75,7 +76,8 @@ public class AuthService {
         var user = ((User) auth.getPrincipal());
 
         logService.logInfo("Logged user");
-        return jwtService.generateToken(user);
+        String token = jwtService.generateToken(user);
+        return new AuthResponse(token, user.getId());
     }
 
     @Transactional(noRollbackFor = ActivationTokenException.class)

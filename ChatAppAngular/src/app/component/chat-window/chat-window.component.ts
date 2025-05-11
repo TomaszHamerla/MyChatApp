@@ -25,11 +25,14 @@ export class ChatWindowComponent {
   messages: MessageResponse[] = [];
   @ViewChild('scrollableDiv')
   scrollableDiv!: ElementRef<HTMLDivElement>;
+  senderId: number;
 
   constructor(
     private chatService: ChatService,
     private toastService: ToastService
   ) {
+    const storedId = localStorage.getItem('senderId');
+    this.senderId = storedId ? +storedId : 0;
     effect(() => {
       const chat = this.selectedChat();
       if (chat) {
@@ -62,19 +65,47 @@ export class ChatWindowComponent {
     if (this.text.trim() !== '' && chat) {
       const messageRequest: MessageRequest = {
         content: this.text,
-        senderId: chat.senderId,
-        receiverId: chat.receiverId,
+        senderId: this.getSenderId(chat),
+        receiverId: this.getReceiverId(chat),
         chatId: chat.id
       };
       this.chatService.sendMessage(messageRequest).subscribe({
         next: () => {
+          this.messages.push({
+            content: this.text,
+            senderId: messageRequest.senderId,
+            receiverId: messageRequest.receiverId
+          });
           this.text = '';
         },
         error: (error) => {
           this.toastService.showError(error.error.message);
+        },
+        complete: () => {
+          this.scrollToBottom();
         }
       });
     }
+  }
+
+  keyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.sendMsg();
+    }
+  }
+
+  private getReceiverId(chat: ChatResponse) {
+    if (chat.senderId === this.senderId) {
+      return chat.receiverId;
+    }
+    return chat.senderId;
+  }
+
+  private getSenderId(chat: ChatResponse) {
+    if (chat.senderId === this.senderId) {
+      return chat.senderId;
+    }
+    return chat.receiverId;
   }
 
   private getMessages(id: number) {

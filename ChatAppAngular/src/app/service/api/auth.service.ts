@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {AuthReq} from "../../model/auth";
+import {AuthReq, AuthResponse} from "../../model/auth";
 import {environment} from "../../../environments/environment";
 import {TokenService} from "../utils/token.service";
 import {tap} from "rxjs";
@@ -22,9 +22,10 @@ export class AuthService {
   }
 
   login(authReq: AuthReq) {
-    return this.http.post<string>(`${environment.apiUrl}/auth/login`, authReq, {responseType: 'text' as 'json'}).pipe(
-      tap(token => {
-          this.tokenService.token = token;
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, authReq).pipe(
+      tap((authRes: AuthResponse) => {
+          this.tokenService.token = authRes.token;
+          localStorage.setItem('senderId', authRes.id.toString());
           localStorage.setItem('userEmail', authReq.email);
         }
       ));
@@ -51,6 +52,7 @@ export class AuthService {
   logout() {
     this.tokenService.removeToken();
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('senderId');
     this.router.navigate(['login']);
   }
 
