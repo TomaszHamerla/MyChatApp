@@ -36,6 +36,53 @@
   margin-bottom: 1rem;
 }
 
+.sender{
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.sender .message-content {
+  background: #0d082d;
+}
+
+.receiver{
+  display: flex;
+  align-items: center;
+  justify-content:  start;
+}
+
+.receiver .message-content {
+  background: gray;
+}
+
+.sender .message-content::after {
+  content: "";
+  position: absolute;
+  right: -5px;
+  top: 0;
+  border-width: 0 0 25px 10px;
+  border-style: solid;
+  border-color: transparent transparent transparent #0d082d;
+}
+
+.receiver .message-content::after {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 0;
+  border-width: 0 10px 25px 0;
+  border-style: solid;
+  border-color: transparent gray transparent transparent;
+}
+
+.message-content {
+  position: relative;
+  color: white;
+  padding: .5rem;
+  border-radius: .5rem;
+}
+
 .input-container {
   display: flex;
 

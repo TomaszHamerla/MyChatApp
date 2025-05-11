@@ -1,27 +1,29 @@
-  <ng-container *ngIf="selectedChat(); else noChat">
-    <div class="chat-window">
-      <div class="chat-header">
-        <p>{{ selectedChat()?.name }}</p>
-      </div>
-      <div #scrollableDiv class="chat-messages-container">
-        <div class="chat-messages">
-          <ng-container *ngFor="let message of messages">
-            <div class="message">
+<ng-container *ngIf="selectedChat(); else noChat">
+  <div class="chat-window">
+    <div class="chat-header">
+      <p>{{ selectedChat()?.name }}</p>
+    </div>
+    <div #scrollableDiv class="chat-messages-container">
+      <div class="chat-messages">
+        <ng-container *ngFor="let message of messages">
+          <div class="message" [ngClass]="message.senderId === senderId ? 'sender' : 'receiver'">
+            <div class="message-content">
               <p>{{ message.content }}</p>
             </div>
-          </ng-container>
-        </div>
-      </div>
-      <div class="input-container">
-        <div class="input">
-          <input type="text" pInputText [(ngModel)]="text" placeholder="Napisz wiadomość ..."/>
-        </div>
-        <div class="send-btn">
-          <p-button icon="pi pi-send" (onClick)="sendMsg()"></p-button>
-        </div>
+          </div>
+        </ng-container>
       </div>
     </div>
-  </ng-container>
+    <div class="input-container">
+      <div class="input">
+        <input type="text" pInputText [(ngModel)]="text" placeholder="Napisz wiadomość ..." (keydown)="keyDown($event)"/>
+      </div>
+      <div class="send-btn">
+        <p-button icon="pi pi-send" (onClick)="sendMsg()"></p-button>
+      </div>
+    </div>
+  </div>
+</ng-container>
 <ng-template #noChat>
   <div class="no-chat">
     <div class="no-chat-info">
