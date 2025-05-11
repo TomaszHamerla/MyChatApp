@@ -4,4 +4,5 @@ export interface Notification {
   senderId?: number;
   receiverId?: number;
   chatName?: string;
+  createdDate?: Date;
 }

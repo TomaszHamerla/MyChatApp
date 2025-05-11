@@ -10,10 +10,12 @@ import {MessageResponse} from "../../model/MessageResponse";
 import {ToastService} from "../../service/utils/toast.service";
 import {Notification} from "../../model/Notification";
 import {ProgressSpinner} from "primeng/progressspinner";
+import {PickerComponent} from "@ctrl/ngx-emoji-mart";
+import {EmojiData} from "@ctrl/ngx-emoji-mart/ngx-emoji";
 
 @Component({
   selector: 'app-chat-window',
-  imports: [CommonModule, InputTextModule, FormsModule, ButtonModule, ProgressSpinner],
+  imports: [CommonModule, InputTextModule, FormsModule, ButtonModule, ProgressSpinner, PickerComponent],
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.css'
 })
@@ -31,6 +33,7 @@ export class ChatWindowComponent {
   pageSize = 20;
   allMessagesLoaded = false;
   loading = false;
+  showEmojis = false;
 
   constructor(
     private chatService: ChatService,
@@ -60,7 +63,8 @@ export class ChatWindowComponent {
             id: 0,
             content: notification.content ?? '',
             senderId: notification.senderId ?? 0,
-            receiverId: notification.receiverId ?? 0
+            receiverId: notification.receiverId ?? 0,
+            createdDate: notification.createdDate ?? new Date(),
           }
           this.messages.push(newMessage);
           this.scrollToBottom();
@@ -109,6 +113,12 @@ export class ChatWindowComponent {
     if (chat) {
       this.getMessages(chat.id, true);
     }
+  }
+
+  onSelectEmojis(emojiSelected: any) {
+    const emoji: EmojiData = emojiSelected.emoji;
+    this.text += emoji.native;
+    this.showEmojis = false;
   }
 
   private getReceiverId(chat: ChatResponse) {

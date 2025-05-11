@@ -40,7 +40,7 @@ public class MessageService {
         message.setSenderId(messageRequest.getSenderId());
         message.setReceiverId(messageRequest.getReceiverId());
 
-        messageRepository.save(message);
+        Message savedMsg = messageRepository.save(message);
 
         Notification notification = Notification.builder()
                 .chatId(chat.getId())
@@ -48,6 +48,7 @@ public class MessageService {
                 .senderId(messageRequest.getSenderId())
                 .receiverId(messageRequest.getReceiverId())
                 .chatName(chat.getRecipient().getUsername())
+                .createdDate(savedMsg.getCreatedDate())
                 .build();
 
         String userEmail = userRepository.findById(messageRequest.getReceiverId())
