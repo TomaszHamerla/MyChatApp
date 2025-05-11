@@ -2,6 +2,8 @@ package com.example.chatapp.model;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,4 +16,5 @@ public class Notification {
     private Long senderId;
     private Long receiverId;
     private String chatName;
+    private LocalDateTime createdDate;
 }

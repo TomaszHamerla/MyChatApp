@@ -1,4 +1,5 @@
 @import "primeicons/primeicons.css";
+@import '@ctrl/ngx-emoji-mart/picker';
 
 html, body {
   height: 100vh;

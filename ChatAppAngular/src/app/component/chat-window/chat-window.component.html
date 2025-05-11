@@ -32,7 +32,14 @@
                (keydown)="keyDown($event)"/>
       </div>
       <div class="send-btn">
+        <p-button severity="help" icon="pi pi-face-smile" (onClick)="showEmojis = !showEmojis"></p-button>
         <p-button icon="pi pi-send" (onClick)="sendMsg()"></p-button>
+        <ng-container *ngIf="showEmojis">
+          <emoji-mart
+            class="emojis-panel"
+            (emojiClick)="onSelectEmojis($event)"
+          ></emoji-mart>
+        </ng-container>
       </div>
     </div>
   </div>

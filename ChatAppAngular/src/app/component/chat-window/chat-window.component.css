@@ -115,7 +115,6 @@
 
 .input-container {
   display: flex;
-
   width: 100%;
   padding: 1rem;
 }
@@ -131,6 +130,13 @@
 .send-btn {
   display: flex;
   margin-left: .2rem;
+  gap: .2rem;
+}
+
+.emojis-panel {
+  position: absolute;
+  right: 55px;
+  bottom: 75px;
 }
 
 .no-chat {
