@@ -1,6 +1,6 @@
 <div class="container">
   <div class="login-container">
-    <form [formGroup]="loginForm" (ngSubmit)="auth()" class="login-form">
+    <form [formGroup]="loginForm" (ngSubmit)="auth()" (keydown.enter)="auth()" class="login-form">
       <div>
         @if(loginMode) {
         <div class="form-header">
