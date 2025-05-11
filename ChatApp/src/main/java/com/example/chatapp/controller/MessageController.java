@@ -4,10 +4,9 @@ import com.example.chatapp.model.message.MessageRequest;
 import com.example.chatapp.model.message.MessageResponse;
 import com.example.chatapp.service.MessageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,10 +16,12 @@ public class MessageController {
     private final MessageService messageService;
 
     @GetMapping("/chat/{chatId}")
-    public List<MessageResponse> getAllMessages(
-            @PathVariable("chatId") Long chatId
+    public Page<MessageResponse> getAllMessages(
+            @PathVariable("chatId") Long chatId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size
     ) {
-        return messageService.findChatMessages(chatId);
+        return messageService.findChatMessages(chatId, page, size);
     }
 
     @PostMapping

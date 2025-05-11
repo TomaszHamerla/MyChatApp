@@ -9,10 +9,11 @@ import {MessageRequest} from "../../model/MessageRequest";
 import {MessageResponse} from "../../model/MessageResponse";
 import {ToastService} from "../../service/utils/toast.service";
 import {Notification} from "../../model/Notification";
+import {ProgressSpinner} from "primeng/progressspinner";
 
 @Component({
   selector: 'app-chat-window',
-  imports: [CommonModule, InputTextModule, FormsModule, ButtonModule],
+  imports: [CommonModule, InputTextModule, FormsModule, ButtonModule, ProgressSpinner],
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.css'
 })
@@ -26,6 +27,10 @@ export class ChatWindowComponent {
   @ViewChild('scrollableDiv')
   scrollableDiv!: ElementRef<HTMLDivElement>;
   senderId: number;
+  currentPage = 0;
+  pageSize = 20;
+  allMessagesLoaded = false;
+  loading = false;
 
   constructor(
     private chatService: ChatService,
@@ -36,6 +41,10 @@ export class ChatWindowComponent {
     effect(() => {
       const chat = this.selectedChat();
       if (chat) {
+        this.currentPage = 0;
+        this.pageSize = 20;
+        this.allMessagesLoaded = false;
+        this.messages = [];
         this.getMessages(chat.id);
       } else {
         console.log('No chat selected');
@@ -74,7 +83,8 @@ export class ChatWindowComponent {
           this.messages.push({
             content: this.text,
             senderId: messageRequest.senderId,
-            receiverId: messageRequest.receiverId
+            receiverId: messageRequest.receiverId,
+            createdDate: new Date(),
           });
           this.text = '';
         },
@@ -94,6 +104,13 @@ export class ChatWindowComponent {
     }
   }
 
+  loadMoreMessages(): void {
+    const chat = this.selectedChat();
+    if (chat) {
+      this.getMessages(chat.id, true);
+    }
+  }
+
   private getReceiverId(chat: ChatResponse) {
     if (chat.senderId === this.senderId) {
       return chat.receiverId;
@@ -108,22 +125,33 @@ export class ChatWindowComponent {
     return chat.receiverId;
   }
 
-  private getMessages(id: number) {
-    this.chatService.getMessages(id).subscribe({
+  private getMessages(id: number, loadMore = false) {
+    if (this.allMessagesLoaded) return;
+    this.loading = true;
+    this.chatService.getMessages(id, this.currentPage, this.pageSize).subscribe({
       next: (response) => {
-        this.messages = response;
+        const newMessages = response.content;
+
+        if (response.last) {
+          this.allMessagesLoaded = true;
+        }
+
+        this.messages = [...newMessages.reverse(), ...this.messages];
+        this.currentPage++;
       },
       error: (error) => {
         this.toastService.showError(error.error.message);
+        this.loading = false;
       },
       complete: () => {
-        this.scrollToBottom();
+        this.scrollToBottom(loadMore);
+        this.loading = false;
       }
     });
   }
 
-  private scrollToBottom(): void {
-    if (this.scrollableDiv) {
+  private scrollToBottom(loadMore: boolean = false): void {
+    if (this.scrollableDiv && !loadMore) {
       setTimeout(() => {
         const div = this.scrollableDiv.nativeElement;
         div.scrollTo({

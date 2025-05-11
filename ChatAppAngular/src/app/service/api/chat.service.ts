@@ -4,6 +4,7 @@ import {environment} from "../../../environments/environment";
 import {ChatResponse} from "../../model/ChatResponse";
 import {MessageResponse} from "../../model/MessageResponse";
 import {MessageRequest} from "../../model/MessageRequest";
+import {Page} from "../../model/Page";
 
 @Injectable({
   providedIn: 'root'
@@ -25,8 +26,11 @@ export class ChatService {
     return this.http.post<number>(`${environment.apiUrl}/chats`, null, {params});
   }
 
-  getMessages(chatId: number) {
-    return this.http.get<MessageResponse[]>(`${environment.apiUrl}/messages/chat/${chatId}`);
+  getMessages(chatId: number, page: number, size: number = 20) {
+    const params = new HttpParams()
+      .set('page', page)
+      .set('size', size);
+    return this.http.get<Page<MessageResponse>>(`${environment.apiUrl}/messages/chat/${chatId}`, {params});
   }
 
   sendMessage(messageRequest: MessageRequest) {
