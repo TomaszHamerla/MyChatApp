@@ -13,7 +13,7 @@
   display: flex;
   border-radius: 1rem;
   padding-left: .5rem;
-  background-color: white;
+  background-color: #cdcdcd;
 }
 
 .chat-messages-container {
@@ -28,6 +28,11 @@
 .chat-messages {
   display: flex;
   flex-direction: column;
+}
+
+.load-more-btn {
+  text-align: center;
+  margin-bottom: .6rem;
 }
 
 .message {
@@ -53,7 +58,7 @@
 }
 
 .receiver .message-content {
-  background: gray;
+  background: #413838;
 }
 
 .sender .message-content::after {
@@ -73,14 +78,39 @@
   top: 0;
   border-width: 0 10px 25px 0;
   border-style: solid;
-  border-color: transparent gray transparent transparent;
+  border-color: transparent #413838 transparent transparent;
 }
 
 .message-content {
   position: relative;
+  display: flex;
+  justify-content: inherit;
   color: white;
   padding: .5rem;
   border-radius: .5rem;
+  flex-direction: column;
+}
+
+.msg-time {
+  display: flex;
+  justify-content: inherit;
+  font-size: .8rem;
+  color: #a1a1a1;
+}
+
+.msg-content {
+  font-size: 1rem;
+  margin-bottom: .5rem;
+}
+
+.loading {
+  height: 100%;
+}
+
+.custom-spinner {
+  display: flex;
+  height: 100%;
+  align-items: center;
 }
 
 .input-container {

@@ -4,19 +4,32 @@
       <p>{{ selectedChat()?.name }}</p>
     </div>
     <div #scrollableDiv class="chat-messages-container">
-      <div class="chat-messages">
-        <ng-container *ngFor="let message of messages">
-          <div class="message" [ngClass]="message.senderId === senderId ? 'sender' : 'receiver'">
-            <div class="message-content">
-              <p>{{ message.content }}</p>
-            </div>
+      <ng-container *ngIf="!loading else loadingTemplate">
+        <div class="chat-messages">
+          <div *ngIf="!allMessagesLoaded && messages.length > 0" class="load-more-btn">
+            <p-button type="button" label="Załaduj więcej" (click)="loadMoreMessages()"></p-button>
           </div>
-        </ng-container>
-      </div>
+
+          <ng-container *ngFor="let message of messages">
+            <div class="message" [ngClass]="message.senderId === senderId ? 'sender' : 'receiver'">
+              <div class="message-content">
+                <div class="msg-time">{{ message.createdDate | date: 'short' }}</div>
+                <div class="msg-content">{{ message.content }}</div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-template #loadingTemplate>
+        <div class="loading">
+          <p-progressSpinner class="custom-spinner" ></p-progressSpinner>
+        </div>
+      </ng-template>
     </div>
     <div class="input-container">
       <div class="input">
-        <input type="text" pInputText [(ngModel)]="text" placeholder="Napisz wiadomość ..." (keydown)="keyDown($event)"/>
+        <input type="text" pInputText [(ngModel)]="text" placeholder="Napisz wiadomość ..."
+               (keydown)="keyDown($event)"/>
       </div>
       <div class="send-btn">
         <p-button icon="pi pi-send" (onClick)="sendMsg()"></p-button>

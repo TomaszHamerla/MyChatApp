@@ -10,6 +10,10 @@ import com.example.chatapp.repository.ChatRepository;
 import com.example.chatapp.repository.MessageRepository;
 import com.example.chatapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,16 +57,15 @@ public class MessageService {
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-    public List<MessageResponse> findChatMessages(Long chatId) {
-        return messageRepository.findMessagesByChatId(chatId)
-                .stream()
-                .map(message -> MessageResponse.builder()
-                        .id(message.getId())
-                        .content(message.getContent())
-                        .senderId(message.getSenderId())
-                        .receiverId(message.getReceiverId())
-                        .createdDate(message.getCreatedDate())
-                        .build())
-                .toList();
+    public Page<MessageResponse> findChatMessages(Long chatId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Message> messagesPage = messageRepository.findMessagesByChatId(chatId, pageable);
+        return messagesPage.map(message -> MessageResponse.builder()
+                .id(message.getId())
+                .content(message.getContent())
+                .senderId(message.getSenderId())
+                .receiverId(message.getReceiverId())
+                .createdDate(message.getCreatedDate())
+                .build());
     }
 }
