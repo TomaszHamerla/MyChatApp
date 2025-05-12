@@ -27,7 +27,6 @@ public class ChatService {
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public List<ChatResponse> getChatsByReceiverId(String jwt) {
         User user = getUserByJwt(jwt);
-
         Long userId = user.getId();
         return chatRepository.findChatsBySenderId(userId)
                 .stream()
@@ -37,6 +36,7 @@ public class ChatService {
                         .lastMessage(chat.getLastMessage())
                         .senderId(chat.getSender().getId())
                         .receiverId(chat.getRecipient().getId())
+                        .unreadMessages(chat.getUnreadMessages(userId))
                         .build())
                 .toList();
     }

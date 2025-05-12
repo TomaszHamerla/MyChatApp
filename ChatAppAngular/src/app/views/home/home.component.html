@@ -1,7 +1,22 @@
 <div class="container">
-  <div class="users">
-    <app-users-chat (chatSelected)="selectedChat.set($event)"></app-users-chat>
-  </div>
+  <ng-template #container>
+    <div class="users">
+      <app-users-chat (chatSelected)="selectedChat.set($event); sidebarVisible = !sidebarVisible"
+                      [notifications]="notifications"></app-users-chat>
+    </div>
+  </ng-template>
+
+  <ng-container *ngIf="!isMobile">
+    <ng-container *ngTemplateOutlet="container"></ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="isMobile">
+    <p-button icon="pi pi-bars" (click)="sidebarVisible = true" class="mobile-menu"></p-button>
+  </ng-container>
+  <p-drawer [(visible)]="sidebarVisible" *ngIf="isMobile">
+    <ng-container *ngTemplateOutlet="container"></ng-container>
+  </p-drawer>
+
   <div class="chat">
     <app-chat-window
       [selectedChat]="selectedChat" [notifications]="notifications">

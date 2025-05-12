@@ -1,6 +1,7 @@
 package com.example.chatapp.model.chat;
 
 import com.example.chatapp.model.message.Message;
+import com.example.chatapp.model.message.MessageState;
 import com.example.chatapp.model.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -55,5 +56,14 @@ public class Chat {
         } else {
             return sender.getName();
         }
+    }
+
+    @Transient
+    public long getUnreadMessages(Long senderId) {
+        return this.messages
+                .stream()
+                .filter(m -> m.getReceiverId().equals(senderId))
+                .filter(m -> MessageState.SENT == m.getState())
+                .count();
     }
 }

@@ -14,3 +14,16 @@
   flex: 3;
   height: 100%;
 }
+
+.mobile-menu {
+  position: absolute;
+  top: 5.4rem;
+  left: .1rem;
+  z-index: 1;
+}
+
+@media (max-width: 520px) {
+  .container {
+    height: calc(100vh - 185px);
+  }
+}

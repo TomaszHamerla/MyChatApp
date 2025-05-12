@@ -35,6 +35,9 @@ public class Message {
     @Column(name = "receiver_id", nullable = false)
     private Long receiverId;
 
+    @Enumerated(EnumType.STRING)
+    private MessageState state;
+
     @ManyToOne
     @JoinColumn(name = "chat_id")
     private Chat chat;

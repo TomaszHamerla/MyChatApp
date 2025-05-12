@@ -23,3 +23,9 @@ h2 {
   margin-top: 1rem;
   justify-content: space-between;
 }
+
+@media (max-width: 520px) {
+  .container {
+    font-size: .8rem;
+  }
+}

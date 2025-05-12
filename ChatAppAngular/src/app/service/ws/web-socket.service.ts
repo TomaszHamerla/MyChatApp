@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TokenService } from "../utils/token.service";
 import SockJS from "sockjs-client";
-import * as Stomp from 'stompjs';
+import { Client, IMessage } from '@stomp/stompjs';
 import { environment } from "../../../environments/environment";
 import { Subscription, Subject, Observable } from 'rxjs';
 import { Notification } from "../../model/Notification";
@@ -23,35 +23,30 @@ export class WebSocketService {
 
   connect(userEmail: string): void {
     const url = `${environment.apiUrl}/ws`;
-    // const token = this.tokenService.token;
     const socket = new SockJS(url);
-    this.stompClient = Stomp.over(socket);
 
-    // const headers = {
-    //   'Authorization': 'Bearer ' + token
-    // };
-
-    this.stompClient.connect(
-      {},
-      () => {
-        this.notificationsSubscription = this.stompClient.subscribe(`/user/${userEmail}/chat`, (message: any) => {
+    this.stompClient = new Client({
+      webSocketFactory: () => socket,
+      debug: () => {},
+      onConnect: () => {
+        this.notificationsSubscription = this.stompClient.subscribe(`/user/${userEmail}/chat`, (message: IMessage) => {
           if (message.body) {
             const notification: Notification = JSON.parse(message.body);
             this.notificationsSubject.next(notification);
           }
         });
       },
-      (error: any) => {
-        console.error('Błąd połączenia WebSocket:', error);
+      onStompError: (frame) => {
+        console.error('STOMP error', frame);
       }
-    );
+    });
+
+    this.stompClient.activate();
   }
 
   disconnect(): void {
-    if (this.stompClient && this.stompClient.connected) {
-      this.stompClient.disconnect(() => {
-        console.log('Rozłączono WebSocket');
-      });
+    if (this.stompClient && this.stompClient.active) {
+      this.stompClient.deactivate();
     }
   }
 }

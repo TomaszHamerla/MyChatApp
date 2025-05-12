@@ -151,3 +151,43 @@
   padding: 1rem;
   border-radius: 1rem;
 }
+
+.unread-line {
+  position: relative;
+  display: flex;
+  margin: 0 0 2rem 0;
+  justify-content: center;
+  padding: 0.5rem 2rem;
+  color: #ffffff;
+  font-weight: 900;
+  background: purple;
+  text-align: center;
+  z-index: 1;
+}
+
+.unread-line::before,
+.unread-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 0;
+  border-top: 1.75rem solid transparent;
+  border-bottom: 1.75rem solid transparent;
+}
+
+.unread-line::before {
+  left: -1rem;
+  border-right: 1rem solid purple;
+}
+
+.unread-line::after {
+  right: -1rem;
+  border-left: 1rem solid purple;
+}
+
+@media (max-width: 520px) {
+  .emojis-panel {
+    right: -10px;
+  }
+}
