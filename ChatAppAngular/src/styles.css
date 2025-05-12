@@ -5,6 +5,7 @@ html, body {
   height: 100vh;
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 body {
@@ -24,4 +25,11 @@ body {
 
 .p-progressspinner {
   display: block !important;
+}
+
+@media (max-width: 520px) {
+  .p-button, .p-inputtext {
+    padding: .5rem !important;
+    font-size: .8rem !important;
+  }
 }

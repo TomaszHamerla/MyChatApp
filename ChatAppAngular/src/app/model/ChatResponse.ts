@@ -4,4 +4,5 @@ export interface ChatResponse {
   lastMessage: string;
   senderId: number;
   receiverId: number;
+  unreadMessages: number;
 }

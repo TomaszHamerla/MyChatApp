@@ -3,3 +3,10 @@
   flex-direction: column;
   gap: 1rem;
 }
+
+.chat-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}

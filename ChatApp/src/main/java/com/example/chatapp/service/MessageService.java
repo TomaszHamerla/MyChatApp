@@ -1,24 +1,26 @@
 package com.example.chatapp.service;
 
 import com.example.chatapp.exception.ResourceNotFoundException;
-import com.example.chatapp.model.chat.Chat;
 import com.example.chatapp.model.Notification;
+import com.example.chatapp.model.chat.Chat;
 import com.example.chatapp.model.message.Message;
 import com.example.chatapp.model.message.MessageRequest;
 import com.example.chatapp.model.message.MessageResponse;
+import com.example.chatapp.model.message.MessageState;
+import com.example.chatapp.model.user.User;
 import com.example.chatapp.repository.ChatRepository;
 import com.example.chatapp.repository.MessageRepository;
 import com.example.chatapp.repository.UserRepository;
+import com.example.chatapp.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +30,7 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final NotificationService notificationService;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     @Transactional
     public void saveMessage(MessageRequest messageRequest) {
@@ -39,6 +42,7 @@ public class MessageService {
         message.setChat(chat);
         message.setSenderId(messageRequest.getSenderId());
         message.setReceiverId(messageRequest.getReceiverId());
+        message.setState(MessageState.SENT);
 
         Message savedMsg = messageRepository.save(message);
 
@@ -68,5 +72,19 @@ public class MessageService {
                 .receiverId(message.getReceiverId())
                 .createdDate(message.getCreatedDate())
                 .build());
+    }
+
+    @Transactional
+    public void setMessagesToSeen(Long chatId, String jwt) {
+        User user = getUserByJwt(jwt);
+        Long senderId = user.getId();
+
+        messageRepository.setMessagesToSeenByChatIdAndSenderId(chatId, senderId, MessageState.SEEN);
+    }
+
+    private User getUserByJwt(String jwt) {
+        String userEmail = jwtService.extractUsername(jwt);
+        return userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

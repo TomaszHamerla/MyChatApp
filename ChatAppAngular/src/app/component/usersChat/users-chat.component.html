@@ -8,7 +8,13 @@
                [filter]="true"
                optionLabel="name"
                [(ngModel)]="selectedChat"
-               (onChange)="onChange($event.value)" emptyFilterMessage="Brak czatów"/>
+               (onChange)="onChange($event.value)" emptyFilterMessage="Brak czatów">
+      <ng-template #item let-chat>
+        <div class="chat-info">
+          <div>{{ chat.name }}</div>
+          <p-badge *ngIf="chat.unreadMessages > 0" [value]="chat.unreadMessages"></p-badge>
+        </div>
+      </ng-template>
+    </p-listbox>
   </ng-container>
 </div>
-

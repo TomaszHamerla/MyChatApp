@@ -36,4 +36,8 @@ export class ChatService {
   sendMessage(messageRequest: MessageRequest) {
     return this.http.post<void>(`${environment.apiUrl}/messages`, messageRequest);
   }
+
+  setMessageToSeen(chatId: number) {
+    return this.http.patch<void>(`${environment.apiUrl}/messages/chat/${chatId}`, null);
+  }
 }

@@ -1,4 +1,4 @@
-import {Component, effect, ElementRef, Input, Signal, ViewChild} from '@angular/core';
+import {Component, effect, ElementRef, Input, Signal, ViewChild, WritableSignal} from '@angular/core';
 import {ChatResponse} from "../../model/ChatResponse";
 import {CommonModule} from "@angular/common";
 import {InputTextModule} from "primeng/inputtext";
@@ -23,7 +23,7 @@ export class ChatWindowComponent {
   @Input({required: true})
   selectedChat!: Signal<ChatResponse | null>;
   @Input({required: true})
-  notifications!: Signal<Notification | null>;
+  notifications!: WritableSignal<Notification | null>;
   text = '';
   messages: MessageResponse[] = [];
   @ViewChild('scrollableDiv')
@@ -50,7 +50,7 @@ export class ChatWindowComponent {
         this.messages = [];
         this.getMessages(chat.id);
       } else {
-        console.log('No chat selected');
+        this.notifications.set(null);
       }
     });
 
@@ -66,6 +66,7 @@ export class ChatWindowComponent {
             receiverId: notification.receiverId ?? 0,
             createdDate: notification.createdDate ?? new Date(),
           }
+          this.updateUnreadMsgLineInfo(chat);
           this.messages.push(newMessage);
           this.scrollToBottom();
         }
@@ -97,6 +98,11 @@ export class ChatWindowComponent {
         },
         complete: () => {
           this.scrollToBottom();
+          this.messages = this.messages.filter(msg => !msg.isMsgCountInfo);
+          const chat = this.selectedChat();
+          if (chat) {
+            chat.unreadMessages = 0;
+          }
         }
       });
     }
@@ -119,6 +125,20 @@ export class ChatWindowComponent {
     const emoji: EmojiData = emojiSelected.emoji;
     this.text += emoji.native;
     this.showEmojis = false;
+  }
+
+  setMessageToSeen() {
+    const chat = this.selectedChat();
+    if (chat) {
+      this.chatService.setMessageToSeen(chat.id).subscribe({
+        next: () => {
+          chat.unreadMessages = 0;
+        },
+        error: (error) => {
+          this.toastService.showError(error.error.message);
+        }
+      });
+    }
   }
 
   private getReceiverId(chat: ChatResponse) {
@@ -155,6 +175,7 @@ export class ChatWindowComponent {
       },
       complete: () => {
         this.scrollToBottom(loadMore);
+        this.addUnreadMsg();
         this.loading = false;
       }
     });
@@ -170,5 +191,26 @@ export class ChatWindowComponent {
         });
       }, 200);
     }
+  }
+
+  private addUnreadMsg() {
+    const chat = this.selectedChat();
+    if (chat && chat.unreadMessages > 0) {
+      const msgCountInfo: MessageResponse = {
+        isMsgCountInfo: true
+      };
+      const index = this.messages.length - chat.unreadMessages
+      this.messages.splice(index, 0, msgCountInfo);
+      this.setMessageToSeen();
+    }
+  }
+
+  private updateUnreadMsgLineInfo(chat: ChatResponse) {
+    const msgCountInfo: MessageResponse = {
+      isMsgCountInfo: true
+    };
+    this.messages = this.messages.filter(msg => !msg.isMsgCountInfo);
+    const index = this.messages.length - chat.unreadMessages;
+    this.messages.splice(index, 0, msgCountInfo);
   }
 }

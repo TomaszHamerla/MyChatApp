@@ -3,6 +3,7 @@ package com.example.chatapp.controller;
 import com.example.chatapp.model.message.MessageRequest;
 import com.example.chatapp.model.message.MessageResponse;
 import com.example.chatapp.service.MessageService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -28,5 +29,12 @@ public class MessageController {
     @ResponseStatus(HttpStatus.CREATED)
     public void saveMessage(@RequestBody MessageRequest message) {
         messageService.saveMessage(message);
+    }
+
+    @PatchMapping("/chat/{chatId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void setMessageToSeen(@PathVariable("chatId") Long chatId, HttpServletRequest request) {
+        String jwt = request.getHeader("Authorization").substring(7);
+        messageService.setMessagesToSeen(chatId, jwt);
     }
 }
