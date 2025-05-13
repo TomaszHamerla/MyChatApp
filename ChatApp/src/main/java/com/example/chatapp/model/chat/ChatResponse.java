@@ -15,4 +15,5 @@ public class ChatResponse {
     private long senderId;
     private long receiverId;
     private long unreadMessages;
+    private String senderNick;
 }

@@ -5,6 +5,7 @@ import {ChatResponse} from "../../model/ChatResponse";
 import {MessageResponse} from "../../model/MessageResponse";
 import {MessageRequest} from "../../model/MessageRequest";
 import {Page} from "../../model/Page";
+import {UserResponse} from "../../model/UserResponse";
 
 @Injectable({
   providedIn: 'root'
@@ -39,5 +40,13 @@ export class ChatService {
 
   setMessageToSeen(chatId: number) {
     return this.http.patch<void>(`${environment.apiUrl}/messages/chat/${chatId}`, null);
+  }
+
+  updateNickName(userId: number, chatId: number, newNick: string) {
+    const params = new HttpParams()
+      .set('userId', userId)
+      .set('chatId', chatId)
+      .set('newNick', newNick);
+    return this.http.patch<UserResponse>(`${environment.apiUrl}/chats/updateUserNick`, null, {params});
   }
 }

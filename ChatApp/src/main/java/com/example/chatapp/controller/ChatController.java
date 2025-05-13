@@ -29,4 +29,13 @@ public class ChatController {
         String jwt = request.getHeader("Authorization").substring(7);
         return chatService.getChatsByReceiverId(jwt);
     }
+
+    @PatchMapping("/updateUserNick")
+    public void updateUserNick(
+            @RequestParam("userId") Long userId,
+            @RequestParam("chatId") Long chatId,
+            @RequestParam("newNick") String newNick
+    ) {
+        chatService.updateUserNick(userId, chatId, newNick);
+    }
 }

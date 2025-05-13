@@ -2,7 +2,7 @@
   <div class="chat-window">
     <div class="chat-header">
       <div>
-        <p>{{ selectedChat()?.name }}</p>
+        <p>{{ chatName }}</p>
       </div>
       <div>
         <div class="icon-btn" (click)="openUserEditDialog()">
@@ -36,7 +36,7 @@
       </ng-container>
       <ng-template #loadingTemplate>
         <div class="loading">
-          <p-progressSpinner class="custom-spinner" ></p-progressSpinner>
+          <p-progressSpinner class="custom-spinner"></p-progressSpinner>
         </div>
       </ng-template>
     </div>
@@ -65,4 +65,16 @@
     </div>
   </div>
 </ng-template>
+
+<div class="card flex justify-center">
+  <p-dialog header="Edytuj nazwę użytkwonnika" [modal]="true" [(visible)]="visibleEditUserDialog">
+    <div class="edit-input">
+      <input #input pInputText id="username" class="flex-auto" autocomplete="off" placeholder="Podaj nazwę"/>
+    </div>
+    <div class="edit-btns">
+      <p-button label="Anuluj" severity="secondary" (click)="visibleEditUserDialog = false"/>
+      <p-button label="Zapisz" (click)="updateUserNick(input.value)"/>
+    </div>
+  </p-dialog>
+</div>
 
