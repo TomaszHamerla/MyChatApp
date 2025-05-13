@@ -1,7 +1,14 @@
 <ng-container *ngIf="selectedChat(); else noChat">
   <div class="chat-window">
     <div class="chat-header">
-      <p>{{ selectedChat()?.name }}</p>
+      <div>
+        <p>{{ selectedChat()?.name }}</p>
+      </div>
+      <div>
+        <div class="icon-btn" (click)="openUserEditDialog()">
+          <i class="pi pi-user-edit"></i>
+        </div>
+      </div>
     </div>
     <div #scrollableDiv class="chat-messages-container">
       <ng-container *ngIf="!loading else loadingTemplate">

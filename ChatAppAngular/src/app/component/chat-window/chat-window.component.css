@@ -11,9 +11,23 @@
 
 .chat-header {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   border-radius: 1rem;
   padding-left: .5rem;
   background-color: #cdcdcd;
+}
+
+.icon-btn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 2rem;
+  height: 2rem;
+  margin-right: 1rem;
+  border-radius: 50%;
+  background-color: #878585;
 }
 
 .chat-messages-container {

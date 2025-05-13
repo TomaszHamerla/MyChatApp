@@ -34,6 +34,7 @@ export class ChatWindowComponent {
   allMessagesLoaded = false;
   loading = false;
   showEmojis = false;
+  isFirstLoad = false;
 
   constructor(
     private chatService: ChatService,
@@ -51,6 +52,7 @@ export class ChatWindowComponent {
         this.getMessages(chat.id);
       } else {
         this.notifications.set(null);
+        this.isFirstLoad = false;
       }
     });
 
@@ -141,6 +143,11 @@ export class ChatWindowComponent {
     }
   }
 
+  openUserEditDialog() {
+    console.log('bedzie edycja' +
+      '')
+  }
+
   private getReceiverId(chat: ChatResponse) {
     if (chat.senderId === this.senderId) {
       return chat.receiverId;
@@ -199,13 +206,17 @@ export class ChatWindowComponent {
       const msgCountInfo: MessageResponse = {
         isMsgCountInfo: true
       };
-      const index = this.messages.length - chat.unreadMessages
+      const index = this.messages.length - chat.unreadMessages;
       this.messages.splice(index, 0, msgCountInfo);
       this.setMessageToSeen();
     }
   }
 
   private updateUnreadMsgLineInfo(chat: ChatResponse) {
+    if (!this.isFirstLoad) {
+      this.isFirstLoad = true;
+      return;
+    }
     const msgCountInfo: MessageResponse = {
       isMsgCountInfo: true
     };
