@@ -37,6 +37,7 @@ public class ChatService {
                         .senderId(chat.getSender().getId())
                         .receiverId(chat.getRecipient().getId())
                         .unreadMessages(chat.getUnreadMessages(userId))
+                        .senderNick(chat.getNickName(userId))
                         .build())
                 .toList();
     }
@@ -60,6 +61,21 @@ public class ChatService {
 
         Chat savedChat = chatRepository.save(chat);
         return savedChat.getId();
+    }
+
+    @Transactional
+    public void updateUserNick(Long userId, Long chatId, String newNick) {
+        Chat chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new ResourceNotFoundException("Chat not found"));
+        if (chat.getSender().getId().equals(userId)) {
+            chat.setSenderNickName(newNick);
+        } else if (chat.getRecipient().getId().equals(userId)) {
+            chat.setRecipientNickName(newNick);
+        } else {
+            throw new IllegalArgumentException("User is not part of this chat");
+        }
+
+        chatRepository.save(chat);
     }
 
     private User getUserByJwt(String jwt) {

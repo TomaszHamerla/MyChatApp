@@ -12,10 +12,11 @@ import {Notification} from "../../model/Notification";
 import {ProgressSpinner} from "primeng/progressspinner";
 import {PickerComponent} from "@ctrl/ngx-emoji-mart";
 import {EmojiData} from "@ctrl/ngx-emoji-mart/ngx-emoji";
+import {Dialog} from "primeng/dialog";
 
 @Component({
   selector: 'app-chat-window',
-  imports: [CommonModule, InputTextModule, FormsModule, ButtonModule, ProgressSpinner, PickerComponent],
+  imports: [CommonModule, InputTextModule, FormsModule, ButtonModule, ProgressSpinner, PickerComponent, Dialog],
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.css'
 })
@@ -35,6 +36,8 @@ export class ChatWindowComponent {
   loading = false;
   showEmojis = false;
   isFirstLoad = false;
+  visibleEditUserDialog = false;
+  chatName: string = '';
 
   constructor(
     private chatService: ChatService,
@@ -45,6 +48,7 @@ export class ChatWindowComponent {
     effect(() => {
       const chat = this.selectedChat();
       if (chat) {
+        this.prepareChatName();
         this.currentPage = 0;
         this.pageSize = 20;
         this.allMessagesLoaded = false;
@@ -144,8 +148,34 @@ export class ChatWindowComponent {
   }
 
   openUserEditDialog() {
-    console.log('bedzie edycja' +
-      '')
+    this.visibleEditUserDialog = true;
+  }
+
+  updateUserNick(value: string) {
+    const chat = this.selectedChat();
+    if (chat) {
+      const userId = this.getReceiverId(chat);
+      const chatId = chat.id
+      this.chatService.updateNickName(userId, chatId, value).subscribe({
+        next: () => {
+          this.toastService.showInfo('Nick został zaktualizowany');
+          this.visibleEditUserDialog = false;
+          this.chatName = value;
+        },
+        error: (error) => {
+          this.toastService.showError(error.error.message);
+          this.visibleEditUserDialog = false;
+        }
+      });
+    }
+    this.visibleEditUserDialog = false;
+  }
+
+  private prepareChatName() {
+    const chat = this.selectedChat();
+    if (chat) {
+      this.chatName = chat.senderNick ?? chat.name;
+    }
   }
 
   private getReceiverId(chat: ChatResponse) {

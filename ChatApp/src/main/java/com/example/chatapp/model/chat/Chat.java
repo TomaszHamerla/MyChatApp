@@ -29,6 +29,12 @@ public class Chat {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
+    @Column(name = "sender_nickname")
+    private String senderNickName;
+
+    @Column(name = "recipient_nickname")
+    private String recipientNickName;
+
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private User sender;
@@ -65,5 +71,14 @@ public class Chat {
                 .filter(m -> m.getReceiverId().equals(senderId))
                 .filter(m -> MessageState.SENT == m.getState())
                 .count();
+    }
+
+    @Transient
+    public String getNickName(Long id) {
+        if (sender.getId().equals(id)) {
+            return recipientNickName;
+        } else {
+            return senderNickName;
+        }
     }
 }

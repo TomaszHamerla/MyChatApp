@@ -18,7 +18,7 @@
   background-color: #cdcdcd;
 }
 
-.icon-btn{
+.icon-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,7 +55,7 @@
   margin-bottom: 1rem;
 }
 
-.sender{
+.sender {
   display: flex;
   align-items: center;
   justify-content: end;
@@ -65,10 +65,10 @@
   background: #0d082d;
 }
 
-.receiver{
+.receiver {
   display: flex;
   align-items: center;
-  justify-content:  start;
+  justify-content: start;
 }
 
 .receiver .message-content {
@@ -198,6 +198,18 @@
 .unread-line::after {
   right: -1rem;
   border-left: 1rem solid purple;
+}
+
+.edit-input {
+  .p-inputtext {
+    width: 100%;
+  }
+}
+
+.edit-btns {
+  display: flex;
+  justify-content: space-between;
+  margin-top: .5rem;
 }
 
 @media (max-width: 520px) {

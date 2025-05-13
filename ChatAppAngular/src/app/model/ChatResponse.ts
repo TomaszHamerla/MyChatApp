@@ -5,4 +5,5 @@ export interface ChatResponse {
   senderId: number;
   receiverId: number;
   unreadMessages: number;
+  senderNick: string;
 }
