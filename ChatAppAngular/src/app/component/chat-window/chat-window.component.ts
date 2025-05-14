@@ -35,7 +35,6 @@ export class ChatWindowComponent {
   allMessagesLoaded = false;
   loading = false;
   showEmojis = false;
-  isFirstLoad = false;
   visibleEditUserDialog = false;
   chatName: string = '';
 
@@ -56,7 +55,6 @@ export class ChatWindowComponent {
         this.getMessages(chat.id);
       } else {
         this.notifications.set(null);
-        this.isFirstLoad = false;
       }
     });
 
@@ -243,10 +241,6 @@ export class ChatWindowComponent {
   }
 
   private updateUnreadMsgLineInfo(chat: ChatResponse) {
-    if (!this.isFirstLoad) {
-      this.isFirstLoad = true;
-      return;
-    }
     const msgCountInfo: MessageResponse = {
       isMsgCountInfo: true
     };
