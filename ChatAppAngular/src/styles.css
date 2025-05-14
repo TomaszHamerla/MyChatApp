@@ -2,9 +2,12 @@
 @import '@ctrl/ngx-emoji-mart/picker';
 
 html, body {
-  height: 100vh;
+  position: relative;
   margin: 0;
+  border: 0;
   padding: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -30,6 +33,5 @@ body {
 @media (max-width: 520px) {
   .p-button, .p-inputtext {
     padding: .5rem !important;
-    font-size: .8rem !important;
   }
 }
