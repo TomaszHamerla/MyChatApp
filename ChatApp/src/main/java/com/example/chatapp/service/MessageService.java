@@ -3,10 +3,7 @@ package com.example.chatapp.service;
 import com.example.chatapp.exception.ResourceNotFoundException;
 import com.example.chatapp.model.Notification;
 import com.example.chatapp.model.chat.Chat;
-import com.example.chatapp.model.message.Message;
-import com.example.chatapp.model.message.MessageRequest;
-import com.example.chatapp.model.message.MessageResponse;
-import com.example.chatapp.model.message.MessageState;
+import com.example.chatapp.model.message.*;
 import com.example.chatapp.model.user.User;
 import com.example.chatapp.repository.ChatRepository;
 import com.example.chatapp.repository.MessageRepository;
@@ -42,6 +39,7 @@ public class MessageService {
         message.setChat(chat);
         message.setSenderId(messageRequest.getSenderId());
         message.setReceiverId(messageRequest.getReceiverId());
+        message.setType(MessageType.TEXT);
         message.setState(MessageState.SENT);
 
         Message savedMsg = messageRepository.save(message);
@@ -53,6 +51,7 @@ public class MessageService {
                 .receiverId(messageRequest.getReceiverId())
                 .chatName(chat.getRecipient().getUsername())
                 .createdDate(savedMsg.getCreatedDate())
+                .type(MessageType.TEXT)
                 .build();
 
         String userEmail = userRepository.findById(messageRequest.getReceiverId())
@@ -71,6 +70,7 @@ public class MessageService {
                 .senderId(message.getSenderId())
                 .receiverId(message.getReceiverId())
                 .createdDate(message.getCreatedDate())
+                .type(message.getType())
                 .build());
     }
 

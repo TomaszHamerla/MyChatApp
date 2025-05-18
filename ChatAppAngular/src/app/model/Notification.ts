@@ -1,3 +1,5 @@
+import {MessageType} from "./MessageType";
+
 export interface Notification {
   chatId?: number;
   content?: string;
@@ -5,4 +7,5 @@ export interface Notification {
   receiverId?: number;
   chatName?: string;
   createdDate?: Date;
+  type: MessageType;
 }

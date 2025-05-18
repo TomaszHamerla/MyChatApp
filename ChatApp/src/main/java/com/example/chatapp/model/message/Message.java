@@ -38,6 +38,10 @@ public class Message {
     @Enumerated(EnumType.STRING)
     private MessageState state;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MessageType type;
+
     @ManyToOne
     @JoinColumn(name = "chat_id")
     private Chat chat;
