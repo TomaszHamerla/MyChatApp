@@ -15,5 +15,6 @@ public class MessageResponse {
     private String content;
     private Long senderId;
     private Long receiverId;
+    private MessageType type;
     private LocalDateTime createdDate;
 }

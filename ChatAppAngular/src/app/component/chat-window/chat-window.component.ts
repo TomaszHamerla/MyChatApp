@@ -13,6 +13,7 @@ import {ProgressSpinner} from "primeng/progressspinner";
 import {PickerComponent} from "@ctrl/ngx-emoji-mart";
 import {EmojiData} from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import {Dialog} from "primeng/dialog";
+import {MessageType} from "../../model/MessageType";
 
 @Component({
   selector: 'app-chat-window',
@@ -68,6 +69,7 @@ export class ChatWindowComponent {
             content: notification.content ?? '',
             senderId: notification.senderId ?? 0,
             receiverId: notification.receiverId ?? 0,
+            type: notification.type ?? MessageType.TEXT,
             createdDate: notification.createdDate ?? new Date(),
           }
           this.updateUnreadMsgLineInfo(chat);
@@ -94,6 +96,7 @@ export class ChatWindowComponent {
             senderId: messageRequest.senderId,
             receiverId: messageRequest.receiverId,
             createdDate: new Date(),
+            type: MessageType.TEXT,
           });
           this.text = '';
         },
