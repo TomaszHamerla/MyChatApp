@@ -46,6 +46,8 @@
                (keydown)="keyDown($event)" (focus)="setMessageToSeen()"/>
       </div>
       <div class="send-btn">
+        <p-button severity="info" icon="pi pi-upload" (click)="fileInput.click()"></p-button>
+        <input type="file" #fileInput accept="image/*" style="display: none" (change)="onFileSelected($event)"/>
         <p-button severity="help" icon="pi pi-face-smile" (onClick)="showEmojis = !showEmojis"></p-button>
         <p-button icon="pi pi-send" (onClick)="sendMsg()"></p-button>
         <ng-container *ngIf="showEmojis">
