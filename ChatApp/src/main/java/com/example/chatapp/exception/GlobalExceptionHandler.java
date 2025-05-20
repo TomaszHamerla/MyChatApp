@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -146,6 +147,33 @@ public class GlobalExceptionHandler {
         logService.logError(msg);
         return ResponseEntity
                 .status(NOT_FOUND)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(msg)
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ExceptionResponse> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        String msg = ex.getMessage();
+        logService.logError(msg);
+        return ResponseEntity
+                .status(PAYLOAD_TOO_LARGE)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(msg)
+                                .errorDescription("Przekroczono maksymalny rozmiar pliku")
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleException(Exception ex) {
+        String msg = ex.getMessage();
+        logService.logError(msg);
+        return ResponseEntity
+                .status(INTERNAL_SERVER_ERROR)
                 .body(
                         ExceptionResponse.builder()
                                 .error(msg)

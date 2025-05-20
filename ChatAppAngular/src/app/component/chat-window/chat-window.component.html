@@ -24,6 +24,9 @@
                   <div class="msg-time">{{ message.createdDate | date: 'short' }}</div>
                   <div class="msg-content">{{ message.content }}</div>
                 </div>
+                <p-button *ngIf="message.type === MessageType.FILE" severity="contrast" icon="pi pi-download"
+                class="download-btn">
+                </p-button>
               </div>
             </ng-container>
             <ng-template #msgCountInfo>

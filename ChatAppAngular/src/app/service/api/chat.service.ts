@@ -49,4 +49,12 @@ export class ChatService {
       .set('newNick', newNick);
     return this.http.patch<UserResponse>(`${environment.apiUrl}/chats/updateUserNick`, null, {params});
   }
+
+  uploadFile(file: File, messageRequest: MessageRequest) {
+    const msgRequest = JSON.stringify(messageRequest);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('messageRequest', msgRequest);
+    return this.http.post<MessageResponse>(`${environment.apiUrl}/messages/upload`, formData);
+  }
 }
