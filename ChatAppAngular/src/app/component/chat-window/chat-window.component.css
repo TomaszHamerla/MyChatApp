@@ -59,10 +59,15 @@
   display: flex;
   align-items: center;
   justify-content: end;
+  flex-direction: row-reverse;
 }
 
 .sender .message-content {
   background: #0d082d;
+}
+
+.sender .download-btn {
+  margin-right: .5rem;
 }
 
 .receiver {
@@ -73,6 +78,16 @@
 
 .receiver .message-content {
   background: #413838;
+}
+
+.receiver .download-btn {
+  margin-left: .5rem;
+}
+
+.download-btn {
+  .p-button {
+    padding: .2rem !important;
+  }
 }
 
 .sender .message-content::after {

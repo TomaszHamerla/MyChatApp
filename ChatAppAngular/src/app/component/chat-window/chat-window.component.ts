@@ -72,6 +72,7 @@ export class ChatWindowComponent {
             type: notification.type ?? MessageType.TEXT,
             createdDate: notification.createdDate ?? new Date(),
           }
+          console.log(newMessage)
           this.updateUnreadMsgLineInfo(chat);
           this.messages.push(newMessage);
           this.scrollToBottom();
@@ -173,9 +174,30 @@ export class ChatWindowComponent {
   }
 
   onFileSelected(event: Event) {
+    const chat = this.selectedChat();
+    if (!chat) return;
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
+      const messageRequest: MessageRequest = {
+        content: file.name,
+        senderId: this.getSenderId(chat),
+        receiverId: this.getReceiverId(chat),
+        chatId: chat.id
+      };
+      this.chatService.uploadFile(file, messageRequest).subscribe({
+        next: (res) => {
+          this.toastService.showInfo('Plik został wysłany');
+          this.messages.push(res);
+        },
+        error: (err) => {
+          const errorResponse = typeof err.error === 'string' ? JSON.parse(err.error) : err.error;
+          this.toastService.showError(errorResponse.errorDescription ?? errorResponse.error);
+        },
+        complete: () => {
+          this.scrollToBottom();
+        }
+      });
     }
   }
 
@@ -258,4 +280,6 @@ export class ChatWindowComponent {
     const index = this.messages.length - chat.unreadMessages;
     this.messages.splice(index, 0, msgCountInfo);
   }
+
+  protected readonly MessageType = MessageType;
 }

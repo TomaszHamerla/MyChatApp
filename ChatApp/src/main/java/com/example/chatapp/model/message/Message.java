@@ -35,6 +35,8 @@ public class Message {
     @Column(name = "receiver_id", nullable = false)
     private Long receiverId;
 
+    private String fileName;
+
     @Enumerated(EnumType.STRING)
     private MessageState state;
 
