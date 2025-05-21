@@ -38,6 +38,7 @@ export class ChatWindowComponent {
   showEmojis = false;
   visibleEditUserDialog = false;
   chatName: string = '';
+  readonly MessageType = MessageType;
 
   constructor(
     private chatService: ChatService,
@@ -201,6 +202,37 @@ export class ChatWindowComponent {
     }
   }
 
+  downloadFile(message: MessageResponse): void {
+    const messageId = message.id;
+    if (!messageId) return;
+
+    this.chatService.downloadFile(messageId).subscribe(response => {
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let fileName = '';
+      if (!contentDisposition) {
+        fileName = this.messages.find(m => m.id === messageId)?.content ?? 'plik';
+      } else {
+        const fileNameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+        fileName = fileNameMatch?.[1] ?? 'plik';
+      }
+
+      if (response.body !== null) {
+        const blob = new Blob([response.body], {type: 'application/octet-stream'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } else {
+        this.toastService.showError('Nie można pobrać pliku');
+      }
+    });
+  }
+
+
   private prepareChatName() {
     const chat = this.selectedChat();
     if (chat) {
@@ -280,6 +312,4 @@ export class ChatWindowComponent {
     const index = this.messages.length - chat.unreadMessages;
     this.messages.splice(index, 0, msgCountInfo);
   }
-
-  protected readonly MessageType = MessageType;
 }

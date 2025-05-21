@@ -25,7 +25,7 @@
                   <div class="msg-content">{{ message.content }}</div>
                 </div>
                 <p-button *ngIf="message.type === MessageType.FILE" severity="contrast" icon="pi pi-download"
-                class="download-btn">
+                class="download-btn" (onClick)="downloadFile(message)">
                 </p-button>
               </div>
             </ng-container>

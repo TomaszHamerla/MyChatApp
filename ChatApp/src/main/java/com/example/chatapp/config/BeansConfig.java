@@ -66,6 +66,7 @@ public class BeansConfig {
                 registry.addMapping("/**")
                         .allowedOrigins("*")
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
+                        .exposedHeaders("Content-Disposition")
                         .allowedHeaders("*");
             }
         };

@@ -131,6 +131,11 @@ public class MessageService {
                 .build();
     }
 
+    public Message findMessageById(Long messageId) {
+        return this.messageRepository.findById(messageId)
+                .orElseThrow(() -> new ResourceNotFoundException("Message not found"));
+    }
+
     private String getContent(Message message) {
         if (message.getType() == MessageType.FILE) {
             return message.getFileName();
