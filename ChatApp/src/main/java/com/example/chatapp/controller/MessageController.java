@@ -1,5 +1,6 @@
 package com.example.chatapp.controller;
 
+import com.example.chatapp.model.message.Message;
 import com.example.chatapp.model.message.MessageRequest;
 import com.example.chatapp.model.message.MessageResponse;
 import com.example.chatapp.service.MessageService;
@@ -7,11 +8,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,8 +48,25 @@ public class MessageController {
     public MessageResponse uploadFile(
             @RequestParam("file") MultipartFile file,
             @RequestParam("messageRequest") String messageRequest
-                           ) throws IOException {
+    ) throws IOException {
         MessageRequest message = new ObjectMapper().readValue(messageRequest, MessageRequest.class);
         return messageService.uploadFile(file, message);
+    }
+
+    @GetMapping("/downloadFile/{messageId}")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable Long messageId) {
+        Message message = messageService.findMessageById(messageId);
+        String fileName = message.getFileName();
+        String fileContent = message.getContent();
+        byte[] decodedBytes = Base64.getDecoder().decode(fileContent);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentLength(decodedBytes.length);
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDisposition(ContentDisposition.builder("inline")
+                .filename(fileName)
+                .build());
+
+        return new ResponseEntity<>(decodedBytes, headers, HttpStatus.OK);
     }
 }

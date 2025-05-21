@@ -57,4 +57,12 @@ export class ChatService {
     formData.append('messageRequest', msgRequest);
     return this.http.post<MessageResponse>(`${environment.apiUrl}/messages/upload`, formData);
   }
+
+  downloadFile(messageId: number) {
+    const url = `${environment.apiUrl}/messages/downloadFile/${messageId}`;
+    return this.http.get(url, {
+      observe: 'response',
+      responseType: 'blob'
+    });
+  }
 }
