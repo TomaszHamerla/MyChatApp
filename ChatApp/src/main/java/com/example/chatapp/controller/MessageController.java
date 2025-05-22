@@ -69,4 +69,33 @@ public class MessageController {
 
         return new ResponseEntity<>(decodedBytes, headers, HttpStatus.OK);
     }
+
+    @GetMapping("/image/{messageId}")
+    public ResponseEntity<byte[]> getImage(@PathVariable Long messageId) {
+        Message message = messageService.findMessageById(messageId);
+        String fileName = message.getFileName();
+        String fileContent = message.getContent();
+        byte[] decodedBytes = Base64.getDecoder().decode(fileContent);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentLength(decodedBytes.length);
+        headers.setContentType(getMimeType(fileName));
+        headers.setContentDisposition(ContentDisposition.builder("inline")
+                .filename(fileName)
+                .build());
+
+        return new ResponseEntity<>(decodedBytes, headers, HttpStatus.OK);
+    }
+
+    private MediaType getMimeType(String fileName) {
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+
+        return switch (extension) {
+            case "pdf" -> MediaType.APPLICATION_PDF;
+            case "png" -> MediaType.IMAGE_PNG;
+            case "bmp", "jpg", "jpeg" -> MediaType.IMAGE_JPEG;
+            case "gif" -> MediaType.IMAGE_GIF;
+            default -> MediaType.APPLICATION_OCTET_STREAM;
+        };
+    }
 }

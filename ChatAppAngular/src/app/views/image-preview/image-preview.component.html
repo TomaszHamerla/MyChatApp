@@ -1,0 +1,30 @@
+<p-progressSpinner class="custom-spinner" *ngIf="!imageUrl"></p-progressSpinner>
+
+<div *ngIf="imageUrl && fileType !== 'application/pdf'" class="img-container">
+  <div *ngIf="messageIds.length > 1" class="navigation">
+    <button class="previous-btn" (click)="previousImage()" [disabled]="currentIndex === 0">←</button>
+    <button class="next-btn" (click)="nextImage()" [disabled]="currentIndex === messageIds.length - 1">→</button>
+  </div>
+
+  <div *ngIf="fileType.startsWith('image/')" class="button-container">
+    <i class="pi pi-search-plus" (click)="zoomIn()"></i>
+    <i class="pi pi-search-minus" (click)="zoomOut()"></i>
+    <i class="pi pi-refresh" (click)="rotateImage()"></i>
+  </div>
+
+  <div class="scroll-container" (mousedown)="startDrag($event)" (mouseup)="stopDrag()" (mouseleave)="stopDrag()">
+    <img
+      class="img-element"
+      *ngIf="fileType.startsWith('image/')"
+      [src]="imageUrl | trustUrl"
+      alt="Loaded Image"
+      [style.transform]="'scale(' + scale + ') translate(' + translateX + 'px, ' + translateY + 'px) rotate(' + currentRotation + 'deg)'"
+      (wheel)="onWheel($event)"
+      (mousemove)="onMouseMove($event)"
+    />
+  </div>
+</div>
+
+<div *ngIf="fileType === 'application/pdf'" class="pdf-container">
+  <iframe [src]="imageUrl | trustUrl" class="pdf-iframe"></iframe>
+</div>
