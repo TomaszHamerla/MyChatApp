@@ -8,6 +8,7 @@ import Aura from '@primeng/themes/aura';
 import {provideAnimationsAsync} from "@angular/platform-browser/animations/async";
 import {tokenInterceptor} from "./service/interceptor/token.interceptor";
 import {MessageService} from "primeng/api";
+import {DialogService} from "primeng/dynamicdialog";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,7 +25,7 @@ export const appConfig: ApplicationConfig = {
       },
       ripple: true,
     }),
-    [MessageService],
-    { provide: LOCALE_ID, useValue: 'PL' }
+    [MessageService, DialogService],
+    { provide: LOCALE_ID, useValue: 'PL' },
   ]
 };

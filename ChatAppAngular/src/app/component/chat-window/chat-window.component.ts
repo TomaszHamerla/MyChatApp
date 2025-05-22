@@ -14,6 +14,8 @@ import {PickerComponent} from "@ctrl/ngx-emoji-mart";
 import {EmojiData} from "@ctrl/ngx-emoji-mart/ngx-emoji";
 import {Dialog} from "primeng/dialog";
 import {MessageType} from "../../model/MessageType";
+import {DialogService, DynamicDialogConfig, DynamicDialogRef} from "primeng/dynamicdialog";
+import {ImagePreviewComponent} from "../../views/image-preview/image-preview.component";
 
 @Component({
   selector: 'app-chat-window',
@@ -39,10 +41,12 @@ export class ChatWindowComponent {
   visibleEditUserDialog = false;
   chatName: string = '';
   readonly MessageType = MessageType;
+  ref: DynamicDialogRef | undefined;
 
   constructor(
     private chatService: ChatService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private dialogService: DialogService
   ) {
     const storedId = localStorage.getItem('senderId');
     this.senderId = storedId ? +storedId : 0;
@@ -66,14 +70,13 @@ export class ChatWindowComponent {
       if (notification && chat) {
         if (notification.chatId === chat.id) {
           const newMessage: MessageResponse = {
-            id: 0,
+            id: notification.msgId,
             content: notification.content ?? '',
             senderId: notification.senderId ?? 0,
             receiverId: notification.receiverId ?? 0,
             type: notification.type ?? MessageType.TEXT,
             createdDate: notification.createdDate ?? new Date(),
           }
-          console.log(newMessage)
           this.updateUnreadMsgLineInfo(chat);
           this.messages.push(newMessage);
           this.scrollToBottom();
@@ -232,6 +235,36 @@ export class ChatWindowComponent {
     });
   }
 
+  hasImageExtension(fileName: string | undefined): boolean {
+    if (!fileName) {
+      return false;
+    }
+
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.pdf'];
+    const lowerFileName = fileName.toLowerCase();
+
+    return imageExtensions.some(ext => lowerFileName.endsWith(ext));
+  }
+
+  imagePreview(message: MessageResponse) {
+    const dynamicDialogConfig = new DynamicDialogConfig();
+    dynamicDialogConfig.width = '70%';
+    dynamicDialogConfig.height = '80%';
+    dynamicDialogConfig.closable = true;
+    dynamicDialogConfig.showHeader = false;
+    dynamicDialogConfig.closeOnEscape = true;
+    dynamicDialogConfig.dismissableMask = true;
+    dynamicDialogConfig.modal = true;
+    dynamicDialogConfig.data = {
+      messageId: message.id,
+      messageIds: this.messages.filter(msg => this.hasImageExtension(msg.content)).map(msg => msg.id)
+    };
+
+    this.ref = this.dialogService.open(ImagePreviewComponent, dynamicDialogConfig);
+    this.ref.onClose.subscribe(() => {
+      this.ref = undefined;
+    });
+  }
 
   private prepareChatName() {
     const chat = this.selectedChat();
@@ -298,6 +331,7 @@ export class ChatWindowComponent {
       const msgCountInfo: MessageResponse = {
         isMsgCountInfo: true
       };
+      this.messages = this.messages.filter(msg => !msg.isMsgCountInfo);
       const index = this.messages.length - chat.unreadMessages;
       this.messages.splice(index, 0, msgCountInfo);
       this.setMessageToSeen();

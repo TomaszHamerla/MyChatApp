@@ -1,0 +1,78 @@
+.img-element {
+  max-width: none;
+  max-height: none;
+  transform-origin: center center;
+  transition: transform 0.1s ease;
+  cursor: pointer;
+}
+
+.img-element:active {
+  cursor: grabbing;
+}
+
+.img-container {
+  background-color: #8f8a8a;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.scroll-container {
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  transform: translateY(-50%);
+}
+
+.previous-btn, .next-btn {
+  background-color: #e5e2e2;
+  border: none;
+  cursor: pointer;
+  font-size: 2em;
+}
+
+.previous-btn:disabled, .next-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button-container {
+  display: flex;
+  padding: 10px;
+  position: fixed;
+  z-index: 1;
+  gap: 3rem;
+  left: 50%;
+  top: 5%;
+  color: black;
+  transform: translateX(-50%);
+}
+
+.pdf-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.pdf-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+::ng-deep .custom-dialog .p-dialog-content {
+  padding: 0;
+  width: 90vw;
+}

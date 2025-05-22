@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class Notification {
 
     private Long chatId;
+    private Long msgId;
     private String content;
     private Long senderId;
     private Long receiverId;

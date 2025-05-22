@@ -30,6 +30,24 @@ body {
   display: block !important;
 }
 
+.custom-spinner {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+
+.p-dialog {
+  border: none !important;
+}
+
+.p-dialog-content {
+  padding: 0 !important;
+}
+
+.p-overlay-mask {
+  z-index: 2;
+}
+
 @media (max-width: 520px) {
   .p-button, .p-inputtext {
     padding: .5rem !important;

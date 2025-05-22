@@ -24,6 +24,9 @@
                   <div class="msg-time">{{ message.createdDate | date: 'short' }}</div>
                   <div class="msg-content">{{ message.content }}</div>
                 </div>
+                <p-button *ngIf="hasImageExtension(message.content)" severity="contrast" icon="pi pi-eye"
+                          class="download-btn" (onClick)="imagePreview(message)">
+                </p-button>
                 <p-button *ngIf="message.type === MessageType.FILE" severity="contrast" icon="pi pi-download"
                 class="download-btn" (onClick)="downloadFile(message)">
                 </p-button>

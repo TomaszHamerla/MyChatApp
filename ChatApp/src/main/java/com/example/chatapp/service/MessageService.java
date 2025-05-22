@@ -108,6 +108,7 @@ public class MessageService {
 
         Notification notification = Notification.builder()
                 .chatId(chat.getId())
+                .msgId(savedMsg.getId())
                 .content(originalFilename)
                 .senderId(messageRequest.getSenderId())
                 .receiverId(messageRequest.getReceiverId())

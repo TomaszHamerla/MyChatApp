@@ -65,4 +65,12 @@ export class ChatService {
       responseType: 'blob'
     });
   }
+
+  getImage(messageId: number) {
+    const url = `${environment.apiUrl}/messages/image/${messageId}`;
+    return this.http.get(url, {
+      observe: 'response',
+      responseType: 'blob'
+    });
+  }
 }
