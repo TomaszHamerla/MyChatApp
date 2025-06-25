@@ -1,5 +1,7 @@
 package com.example.chatapp.service;
 
+import com.example.chatapp.exception.EmailAlreadyExistsException;
+import com.example.chatapp.exception.RoleNotInitialized;
 import com.example.chatapp.model.Role;
 import com.example.chatapp.model.auth.AuthReq;
 import com.example.chatapp.model.email.EmailTemplateName;
@@ -14,11 +16,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -79,5 +84,26 @@ public class AuthServiceTest {
                 eq("Aktywacja konta"),
                 eq("http://localhost:8080/activate-account")
         );
+    }
+
+    @Test
+    void shouldThrowEmailAlreadyExistsExceptionWhenEmailIsTaken() {
+        // given
+        AuthReq authReq = new AuthReq();
+        authReq.setEmail("user@example.com");
+        authReq.setPassword("password123");
+
+        Role userRole = new Role();
+        userRole.setName("USER");
+        when(roleRepository.findByName("USER")).thenReturn(Optional.of(userRole));
+        when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
+        when(userRepository.save(any(User.class)))
+                .thenThrow(new DataIntegrityViolationException("Email already taken"));
+
+        // when + then
+        EmailAlreadyExistsException ex = assertThrows(EmailAlreadyExistsException.class, () ->
+                authService.register(authReq, "http://localhost:8080")
+        );
+        assertEquals("Email user@example.com jest już zarejestrowany!", ex.getMessage());
     }
 }
