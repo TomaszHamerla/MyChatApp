@@ -106,4 +106,19 @@ public class AuthServiceTest {
         );
         assertEquals("Email user@example.com jest już zarejestrowany!", ex.getMessage());
     }
+
+    @Test
+    void shouldThrowRoleNotInitializedExceptionWhenRoleMissing() {
+        // given
+        AuthReq authReq = new AuthReq();
+        authReq.setEmail("user@example.com");
+        authReq.setPassword("password123");
+
+        when(roleRepository.findByName("USER")).thenReturn(Optional.empty());
+
+        // when + then
+        assertThrows(RoleNotInitialized.class, () ->
+                authService.register(authReq, "http://localhost:8080")
+        );
+    }
 }
