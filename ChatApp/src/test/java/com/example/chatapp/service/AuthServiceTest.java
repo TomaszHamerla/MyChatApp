@@ -146,4 +146,16 @@ public class AuthServiceTest {
         assertEquals(123L, response.id());
         verify(logService).logInfo("Logged user");
     }
+
+    @Test
+    void shouldThrowExceptionWhenAuthenticationFails() {
+        // given
+        when(authenticationManager.authenticate(any()))
+                .thenThrow(new BadCredentialsException("Invalid credentials"));
+
+        // when + then
+        assertThrows(BadCredentialsException.class, () -> {
+            authService.login(authReq);
+        });
+    }
 }
