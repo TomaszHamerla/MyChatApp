@@ -158,4 +158,17 @@ public class AuthServiceTest {
             authService.login(authReq);
         });
     }
+
+    @Test
+    void shouldThrowExceptionIfPrincipalIsNotUser() {
+        // given
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn("not a user");
+        when(authenticationManager.authenticate(any())).thenReturn(authentication);
+
+        // when + then
+        assertThrows(ClassCastException.class, () -> {
+            authService.login(authReq);
+        });
+    }
 }
