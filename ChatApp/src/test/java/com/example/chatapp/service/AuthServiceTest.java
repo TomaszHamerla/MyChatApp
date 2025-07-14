@@ -1,8 +1,10 @@
 package com.example.chatapp.service;
 
+import com.example.chatapp.exception.ActivationTokenException;
 import com.example.chatapp.exception.EmailAlreadyExistsException;
 import com.example.chatapp.exception.RoleNotInitialized;
 import com.example.chatapp.model.Role;
+import com.example.chatapp.model.Token;
 import com.example.chatapp.model.auth.AuthReq;
 import com.example.chatapp.model.auth.AuthResponse;
 import com.example.chatapp.model.email.EmailTemplateName;
@@ -22,12 +24,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -57,12 +60,26 @@ public class AuthServiceTest {
     private AuthService authService;
 
     private AuthReq authReq;
+    private User user;
+    private Token token;
 
     @BeforeEach
     void setUp() {
         authReq = new AuthReq();
         authReq.setEmail("user@example.com");
         authReq.setPassword("password123");
+
+        user = User.builder()
+                .id(1L)
+                .email("test@example.com")
+                .enabled(false)
+                .build();
+
+        token = Token.builder()
+                .token("valid-token")
+                .expiresAt(LocalDateTime.now().plusHours(1))
+                .user(user)
+                .build();
     }
 
     @Test
@@ -170,5 +187,21 @@ public class AuthServiceTest {
         assertThrows(ClassCastException.class, () -> {
             authService.login(authReq);
         });
+    }
+
+    @Test
+    void activateAccountShouldActivateAccountSuccessfully() throws MessagingException {
+        // given
+        when(tokenRepository.findByToken("valid-token")).thenReturn(Optional.of(token));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        // when
+        authService.activateAccount("valid-token", "http://localhost");
+
+        // then
+        assertTrue(user.isEnabled());
+        assertNotNull(token.getValidatedAt());
+        verify(userRepository).save(user);
+        verify(tokenRepository).save(token);
     }
 }
