@@ -204,4 +204,18 @@ public class AuthServiceTest {
         verify(userRepository).save(user);
         verify(tokenRepository).save(token);
     }
+
+    @Test
+    void activateAccountShouldThrowWhenTokenIsExpiredAndSendNewEmail() {
+        // given
+        token.setExpiresAt(LocalDateTime.now().minusHours(1)); // expired
+        when(tokenRepository.findByToken("valid-token")).thenReturn(Optional.of(token));
+
+        // when + then
+        ActivationTokenException ex = assertThrows(ActivationTokenException.class, () -> {
+            authService.activateAccount("valid-token", "http://localhost");
+        });
+
+        assertEquals("Token aktywacyjny wygasł, wysłano nowy na podany adres email", ex.getMessage());
+    }
 }
