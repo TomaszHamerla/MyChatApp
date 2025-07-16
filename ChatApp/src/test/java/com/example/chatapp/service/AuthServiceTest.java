@@ -218,4 +218,15 @@ public class AuthServiceTest {
 
         assertEquals("Token aktywacyjny wygasł, wysłano nowy na podany adres email", ex.getMessage());
     }
+
+    @Test
+    void activateAccountShouldThrowWhenTokenNotFound() {
+        // given
+        when(tokenRepository.findByToken("invalid-token")).thenReturn(Optional.empty());
+
+        // when + then
+        assertThrows(ActivationTokenException.class, () -> {
+            authService.activateAccount("invalid-token", "http://localhost");
+        });
+    }
 }
