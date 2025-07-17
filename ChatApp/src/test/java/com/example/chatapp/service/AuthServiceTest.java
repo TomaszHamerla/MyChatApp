@@ -229,4 +229,16 @@ public class AuthServiceTest {
             authService.activateAccount("invalid-token", "http://localhost");
         });
     }
+
+    @Test
+    void activateAccountShouldThrowWhenUserNotFound() {
+        // given
+        when(tokenRepository.findByToken("valid-token")).thenReturn(Optional.of(token));
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // when + then
+        assertThrows(UsernameNotFoundException.class, () -> {
+            authService.activateAccount("valid-token", "http://localhost");
+        });
+    }
 }
