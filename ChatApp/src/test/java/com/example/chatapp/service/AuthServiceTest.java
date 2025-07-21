@@ -241,4 +241,30 @@ public class AuthServiceTest {
             authService.activateAccount("valid-token", "http://localhost");
         });
     }
+
+    @Test
+    void sendResetPasswordLinkShouldSendResetPasswordEmail() {
+        // given
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
+
+        // when
+        authService.sendResetPasswordLink("test@example.com", "http://localhost");
+
+        // then
+        verify(tokenRepository, atLeastOnce()).save(any(Token.class));
+    }
+
+    @Test
+    void sendResetPasswordLinkShouldThrowWhenUserNotFound() {
+        // given
+        when(userRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
+
+        // when + then
+        assertThrows(UsernameNotFoundException.class, () -> {
+            authService.sendResetPasswordLink("notfound@example.com", "http://localhost");
+        });
+
+        verifyNoInteractions(tokenRepository);
+        verifyNoInteractions(logService);
+    }
 }
