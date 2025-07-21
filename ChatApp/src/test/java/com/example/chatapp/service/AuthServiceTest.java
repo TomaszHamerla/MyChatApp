@@ -253,4 +253,18 @@ public class AuthServiceTest {
         // then
         verify(tokenRepository, atLeastOnce()).save(any(Token.class));
     }
+
+    @Test
+    void sendResetPasswordLinkShouldThrowWhenUserNotFound() {
+        // given
+        when(userRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
+
+        // when + then
+        assertThrows(UsernameNotFoundException.class, () -> {
+            authService.sendResetPasswordLink("notfound@example.com", "http://localhost");
+        });
+
+        verifyNoInteractions(tokenRepository);
+        verifyNoInteractions(logService);
+    }
 }
