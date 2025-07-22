@@ -267,4 +267,19 @@ public class AuthServiceTest {
         verifyNoInteractions(tokenRepository);
         verifyNoInteractions(logService);
     }
+
+    @Test
+    void sendResetPasswordLinkShouldLogErrorWhenEmailSendingFails() throws MessagingException {
+        // given
+        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(user));
+
+        doThrow(new MessagingException()).when(emailService)
+                .sendEmail(any(),any(), any(), any(), any());
+
+        // when
+        authService.sendResetPasswordLink("test@example.com", "http://localhost");
+
+        // then
+        verify(logService, atLeastOnce()).logError(any());
+    }
 }
