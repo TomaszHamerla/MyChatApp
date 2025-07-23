@@ -282,4 +282,20 @@ public class AuthServiceTest {
         // then
         verify(logService, atLeastOnce()).logError(any());
     }
+
+    @Test
+    void resetPasswordShouldResetPasswordSuccessfully() {
+        //given
+        String encodedPassword = "encodedPassword";
+
+        when(userRepository.findByEmail(authReq.getEmail())).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode("password123")).thenReturn(encodedPassword);
+
+        // when
+        authService.resetPassword(authReq);
+
+        // then
+        assertEquals(encodedPassword, user.getPassword());
+        verify(userRepository).save(user);
+    }
 }
