@@ -298,4 +298,14 @@ public class AuthServiceTest {
         assertEquals(encodedPassword, user.getPassword());
         verify(userRepository).save(user);
     }
+
+    @Test
+    void  resetPasswordShouldThrowExceptionWhenUserNotFound() {
+        // given
+        when(userRepository.findByEmail(authReq.getEmail())).thenReturn(Optional.empty());
+
+        // when + then
+        assertThrows(UsernameNotFoundException.class, () -> authService.resetPassword(authReq));
+        verify(userRepository, never()).save(any());
+    }
 }
