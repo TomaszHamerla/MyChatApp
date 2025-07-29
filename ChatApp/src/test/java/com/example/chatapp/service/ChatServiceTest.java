@@ -89,4 +89,19 @@ class ChatServiceTest {
         assertEquals(0L, response.getUnreadMessages());
         assertEquals("TestUser", response.getSenderNick());
     }
+
+    @Test
+    void getChatsByReceiverIdShouldThrowWhenUserNotFound() {
+        // given
+        String jwt = "invalid-jwt";
+        String email = "nonexistent@example.com";
+
+        when(jwtService.extractUsername(jwt)).thenReturn(email);
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        // when + then
+        assertThrows(UsernameNotFoundException.class, () -> {
+            chatService.getChatsByReceiverId(jwt);
+        });
+    }
 }
