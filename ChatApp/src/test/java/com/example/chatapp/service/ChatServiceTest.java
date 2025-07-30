@@ -104,4 +104,26 @@ class ChatServiceTest {
             chatService.getChatsByReceiverId(jwt);
         });
     }
+
+    @Test
+    void createChatShouldReturnExistingChatIdIfChatAlreadyExists() {
+        // given
+        String jwt = "mock-jwt";
+        Long receiverId = 2L;
+        Long senderId = user.getId();
+
+        Chat existingChat = mock(Chat.class);
+        when(existingChat.getId()).thenReturn(100L);
+
+        when(jwtService.extractUsername(jwt)).thenReturn(user.getEmail());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(chatRepository.findChatByReceiverAndSender(senderId, receiverId)).thenReturn(Optional.of(existingChat));
+
+        // when
+        Long result = chatService.createChat(jwt, receiverId);
+
+        // then
+        assertEquals(100L, result);
+        verify(chatRepository, never()).save(any(Chat.class));
+    }
 }
