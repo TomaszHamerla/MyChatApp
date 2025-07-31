@@ -126,4 +126,35 @@ class ChatServiceTest {
         assertEquals(100L, result);
         verify(chatRepository, never()).save(any(Chat.class));
     }
+
+    @Test
+    void createChatShouldCreateNewChatWhenNoneExists() {
+        // given
+        String jwt = "mock-jwt";
+        Long receiverId = 2L;
+        Long senderId = user.getId();
+
+        User receiver = User.builder()
+                .id(receiverId)
+                .email("receiver@example.com")
+                .enabled(true)
+                .build();
+
+        Chat savedChat = new Chat();
+        savedChat.setId(200L);
+
+        when(jwtService.extractUsername(jwt)).thenReturn(user.getEmail());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(chatRepository.findChatByReceiverAndSender(senderId, receiverId)).thenReturn(Optional.empty());
+        when(userRepository.findById(senderId)).thenReturn(Optional.of(user));
+        when(userRepository.findById(receiverId)).thenReturn(Optional.of(receiver));
+        when(chatRepository.save(any(Chat.class))).thenReturn(savedChat);
+
+        // when
+        Long result = chatService.createChat(jwt, receiverId);
+
+        // then
+        assertEquals(200L, result);
+        verify(chatRepository).save(any(Chat.class));
+    }
 }
