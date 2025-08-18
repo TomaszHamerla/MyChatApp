@@ -177,4 +177,25 @@ class ChatServiceTest {
 
         assertEquals("User with id " + senderId + " not found", exception.getMessage());
     }
+
+    @Test
+    void createChatShouldThrowWhenReceiverNotFoundById() {
+        // given
+        String jwt = "mock-jwt";
+        Long receiverId = 2L;
+        Long senderId = user.getId();
+
+        when(jwtService.extractUsername(jwt)).thenReturn(user.getEmail());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(chatRepository.findChatByReceiverAndSender(senderId, receiverId)).thenReturn(Optional.empty());
+        when(userRepository.findById(senderId)).thenReturn(Optional.of(user));
+        when(userRepository.findById(receiverId)).thenReturn(Optional.empty());
+
+        // when + then
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+                chatService.createChat(jwt, receiverId)
+        );
+
+        assertEquals("User with id " + receiverId + " not found", exception.getMessage());
+    }
 }
