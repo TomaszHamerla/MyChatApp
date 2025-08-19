@@ -198,4 +198,29 @@ class ChatServiceTest {
 
         assertEquals("User with id " + receiverId + " not found", exception.getMessage());
     }
+
+    @Test
+    void updateUserNickShouldUpdateSenderNickWhenUserIsSender() {
+        // given
+        Long userId = 1L;
+        Long chatId = 10L;
+        String newNick = "SenderNick";
+
+        User sender = User.builder().id(userId).build();
+        User recipient = User.builder().id(2L).build();
+
+        Chat chat = new Chat();
+        chat.setId(chatId);
+        chat.setSender(sender);
+        chat.setRecipient(recipient);
+
+        when(chatRepository.findById(chatId)).thenReturn(Optional.of(chat));
+
+        // when
+        chatService.updateUserNick(userId, chatId, newNick);
+
+        // then
+        assertEquals(newNick, chat.getSenderNickName());
+        verify(chatRepository).save(chat);
+    }
 }
