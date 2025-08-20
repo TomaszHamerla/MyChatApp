@@ -223,4 +223,29 @@ class ChatServiceTest {
         assertEquals(newNick, chat.getSenderNickName());
         verify(chatRepository).save(chat);
     }
+
+    @Test
+    void updateUserNickShouldUpdateRecipientNickWhenUserIsRecipient() {
+        // given
+        Long userId = 2L;
+        Long chatId = 10L;
+        String newNick = "RecipientNick";
+
+        User sender = User.builder().id(1L).build();
+        User recipient = User.builder().id(userId).build();
+
+        Chat chat = new Chat();
+        chat.setId(chatId);
+        chat.setSender(sender);
+        chat.setRecipient(recipient);
+
+        when(chatRepository.findById(chatId)).thenReturn(Optional.of(chat));
+
+        // when
+        chatService.updateUserNick(userId, chatId, newNick);
+
+        // then
+        assertEquals(newNick, chat.getRecipientNickName());
+        verify(chatRepository).save(chat);
+    }
 }
