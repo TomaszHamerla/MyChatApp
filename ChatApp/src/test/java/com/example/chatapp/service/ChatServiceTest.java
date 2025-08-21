@@ -248,4 +248,29 @@ class ChatServiceTest {
         assertEquals(newNick, chat.getRecipientNickName());
         verify(chatRepository).save(chat);
     }
+
+    @Test
+    void updateUserNickShouldThrowWhenUserIsNotPartOfChat() {
+        // given
+        Long userId = 3L;
+        Long chatId = 10L;
+
+        User sender = User.builder().id(1L).build();
+        User recipient = User.builder().id(2L).build();
+
+        Chat chat = new Chat();
+        chat.setId(chatId);
+        chat.setSender(sender);
+        chat.setRecipient(recipient);
+
+        when(chatRepository.findById(chatId)).thenReturn(Optional.of(chat));
+
+        // when + then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                chatService.updateUserNick(userId, chatId, "InvalidNick")
+        );
+
+        assertEquals("User is not part of this chat", exception.getMessage());
+        verify(chatRepository, never()).save(any(Chat.class));
+    }
 }
