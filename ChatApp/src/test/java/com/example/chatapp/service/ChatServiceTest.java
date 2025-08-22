@@ -273,4 +273,21 @@ class ChatServiceTest {
         assertEquals("User is not part of this chat", exception.getMessage());
         verify(chatRepository, never()).save(any(Chat.class));
     }
+
+    @Test
+    void updateUserNickShouldThrowWhenChatNotFound() {
+        // given
+        Long chatId = 10L;
+        Long userId = 1L;
+
+        when(chatRepository.findById(chatId)).thenReturn(Optional.empty());
+
+        // when + then
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () ->
+                chatService.updateUserNick(userId, chatId, "AnyNick")
+        );
+
+        assertEquals("Chat not found", exception.getMessage());
+        verify(chatRepository, never()).save(any(Chat.class));
+    }
 }
